@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Montserrat, Space_Grotesk } from "next/font/google";
+import { Inter, Montserrat, Space_Grotesk, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import Navigation from "@/components/layout/Navigation";
@@ -10,6 +10,7 @@ import CustomCursor from "@/components/ui/CustomCursor";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
+const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
   title: "Tabeg Zouhair | Web & Mobile Developer",
@@ -23,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${montserrat.variable} ${spaceGrotesk.variable} bg-black text-white antialiased font-sans cursor-none`}>
+      <body className={`${inter.variable} ${montserrat.variable} ${spaceGrotesk.variable} ${playfair.variable} bg-black text-white antialiased font-sans cursor-none`}>
         <SmoothScroll>
           <CustomCursor />
           <GrainOverlay />
