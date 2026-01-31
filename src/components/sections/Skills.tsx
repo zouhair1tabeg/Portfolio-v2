@@ -126,7 +126,7 @@ export default function Skills() {
                     </div>
                     <h2 ref={titleRef} className="text-6xl md:text-8xl font-black tracking-tighter uppercase overflow-hidden" aria-label={titleText} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                         {titleText.split("").map((char, i) => (
-                            <span key={i} className="char inline-block">{char}</span>
+                            <span key={i} className="char inline-block">{char === " " ? "\u00A0" : char}</span>
                         ))}
                     </h2>
                 </div>
@@ -143,26 +143,26 @@ export default function Skills() {
     );
 }
 
-// ---- Sub Components ----
-
-// 3D Tilt Card with GSAP Parallax
+// 3D Tilt Card with GSAP Parallax & Glare
 function TiltCard({ category }: { category: any }) {
-    // We use Framer Motion for simple springs, but stick to the "gsap.quickTo" feel manually or via ref
     const cardRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
     const [hover, setHover] = useState(false);
 
     const x = useMotionValue(0);
     const y = useMotionValue(0);
 
-    const rotateX = useTransform(y, [-100, 100], [10, -10]);
-    const rotateY = useTransform(x, [-100, 100], [-10, 10]);
+    // Smoother, subtler rotation for "Heavy Premium" feel
+    const rotateX = useTransform(y, [-100, 100], [5, -5]);
+    const rotateY = useTransform(x, [-100, 100], [-5, 5]);
+
+    // Glare position (moves opposite to mouse)
+    const glareX = useTransform(x, [-100, 100], [100, 0]);
+    const glareY = useTransform(y, [-100, 100], [100, 0]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
 
-        // Center-based coordinates
         const offsetX = e.clientX - rect.left - rect.width / 2;
         const offsetY = e.clientY - rect.top - rect.height / 2;
 
@@ -179,7 +179,7 @@ function TiltCard({ category }: { category: any }) {
     return (
         <motion.div
             ref={cardRef}
-            className="tilt-card relative group touch-none"
+            className="tilt-card relative group touch-none h-full"
             style={{
                 rotateX: rotateX,
                 rotateY: rotateY,
@@ -191,7 +191,7 @@ function TiltCard({ category }: { category: any }) {
             onMouseLeave={handleMouseLeave}
         >
             {/* Card Container */}
-            <div className="relative h-full bg-[#0A0A0A]/90 border border-white/10 rounded-3xl p-8 overflow-hidden backdrop-blur-sm transition-colors duration-500 group-hover:border-white/20">
+            <div className="relative h-full bg-[#0A0A0A]/90 border border-white/5 rounded-3xl p-8 overflow-hidden backdrop-blur-md transition-colors duration-500 group-hover:border-white/20 group-hover:bg-[#0A0A0A]">
 
                 {/* 4. Connectivity Lines Background (SVG) */}
                 <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
@@ -200,15 +200,14 @@ function TiltCard({ category }: { category: any }) {
                             <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" opacity="0.3" />
                         </pattern>
                         <rect width="100%" height="100%" fill={`url(#grid-${category.id})`} />
-                        {/* Lit path on hover */}
                         <motion.path
                             d="M 0 40 Q 150 40 300 200"
                             stroke={category.color}
-                            strokeWidth="2"
+                            strokeWidth="1.5"
                             fill="none"
                             initial={{ pathLength: 0, opacity: 0 }}
-                            animate={{ pathLength: hover ? 1 : 0, opacity: hover ? 1 : 0 }}
-                            transition={{ duration: 1, ease: "easeInOut" }}
+                            animate={{ pathLength: hover ? 1 : 0, opacity: hover ? 0.8 : 0 }}
+                            transition={{ duration: 1.2, ease: "easeInOut" }}
                         />
                     </svg>
                 </div>
@@ -217,42 +216,58 @@ function TiltCard({ category }: { category: any }) {
                 <div
                     className="absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"
                     style={{
-                        background: `radial-gradient(400px circle at top right, ${category.color}20, transparent 40%), radial-gradient(400px circle at bottom left, #222, transparent 40%)`
+                        background: `radial-gradient(500px circle at top right, ${category.color}15, transparent 50%), radial-gradient(400px circle at bottom left, rgba(255,255,255,0.03), transparent 40%)`
+                    }}
+                />
+
+                {/* 6. Dynamic Glare Effect */}
+                <motion.div
+                    className="absolute inset-0 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"
+                    style={{
+                        background: `linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%)`,
+                        x: glareX,
+                        y: glareY,
                     }}
                 />
 
                 {/* Content */}
-                <div ref={contentRef} className="relative z-10 flex flex-col gap-6" style={{ transform: "translateZ(30px)" }}>
+                <div className="relative z-20 flex flex-col gap-6 h-full justify-between" style={{ transform: "translateZ(30px)" }}>
 
                     {/* Header */}
                     <div className="flex items-center justify-between">
-                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white" style={{ backgroundColor: `${category.color}10`, borderColor: `${category.color}30` }}>
-                            <category.icon size={28} style={{ color: category.color }} />
+                        <div className="p-3.5 rounded-2xl bg-[#0F0F0F] border border-white/5 shadow-2xl" style={{ boxShadow: `0 8px 30px -10px ${category.color}20` }}>
+                            <category.icon size={26} style={{ color: category.color }} />
                         </div>
                         <div className="text-right">
-                            <h3 className="text-2xl font-bold uppercase tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                            <h3 className="text-xl font-bold uppercase tracking-tight text-white/90" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                                 {category.label}
                             </h3>
-                            <motion.div
-                                className="h-1 bg-white/10 rounded-full mt-2 w-24 ml-auto overflow-hidden"
-                            >
+                            {/* Animated Level Bar */}
+                            <div className="h-0.5 bg-white/5 rounded-full mt-3 w-20 ml-auto overflow-hidden">
                                 <motion.div
                                     className="h-full rounded-full"
                                     style={{ backgroundColor: category.color }}
                                     initial={{ width: 0 }}
-                                    animate={{ width: hover ? `${category.level}%` : 0 }}
-                                    transition={{ duration: 1, ease: "circOut" }}
+                                    animate={{ width: hover ? `${category.level}%` : "15%" }}
+                                    transition={{ duration: 1.5, ease: "circOut" }}
                                 />
-                            </motion.div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* 6. Magnetic Chips */}
-                    <div className="flex flex-wrap gap-3 mt-4">
+                    {/* 7. Magnetic Chips with Stagger */}
+                    <motion.div
+                        className="flex flex-wrap gap-2.5 mt-2"
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                            visible: { transition: { staggerChildren: 0.05 } }
+                        }}
+                    >
                         {category.skills.map((skill: string, idx: number) => (
                             <MagneticChip key={idx} text={skill} color={category.color} />
                         ))}
-                    </div>
+                    </motion.div>
 
                 </div>
             </div>
@@ -270,7 +285,8 @@ function MagneticChip({ text, color }: { text: string, color: string }) {
         const { left, top, width, height } = ref.current!.getBoundingClientRect();
         const middleX = clientX - (left + width / 2);
         const middleY = clientY - (top + height / 2);
-        setPosition({ x: middleX * 0.2, y: middleY * 0.2 });
+        // Reduced movement range for cleaner effect
+        setPosition({ x: middleX * 0.15, y: middleY * 0.15 });
     };
 
     const reset = () => setPosition({ x: 0, y: 0 });
@@ -284,15 +300,26 @@ function MagneticChip({ text, color }: { text: string, color: string }) {
             onMouseLeave={reset}
             animate={{ x, y }}
             transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
-            className="group/chip relative overflow-hidden px-4 py-2 bg-[#1a1a1a] rounded-lg border border-white/5 cursor-pointer"
+            variants={{
+                hidden: { opacity: 0, y: 10 },
+                visible: { opacity: 1, y: 0 }
+            }}
+            className="group/chip relative overflow-hidden px-3 py-1.5 bg-[#141414] rounded-md border border-white/5 cursor-pointer backdrop-blur-sm"
         >
-            <span className="relative z-10 text-sm font-medium text-gray-300 group-hover/chip:text-white transition-colors">
+            <span className="relative z-10 text-[11px] font-semibold uppercase tracking-wider text-gray-400 group-hover/chip:text-white transition-colors">
                 {text}
             </span>
-            {/* Progress Bar Effect on Chip Hover */}
+
+            {/* Hover Fill Effect */}
             <div
-                className="absolute left-0 bottom-0 top-0 bg-white/5 w-full origin-left scale-x-0 group-hover/chip:scale-x-100 transition-transform duration-500 ease-out"
-                style={{ backgroundColor: `${color}20` }}
+                className="absolute inset-0 opacity-0 group-hover/chip:opacity-20 transition-opacity duration-300"
+                style={{ backgroundColor: color }}
+            />
+
+            {/* Bottom Highlight Line */}
+            <div
+                className="absolute bottom-0 left-0 h-[1px] w-full origin-left scale-x-0 group-hover/chip:scale-x-100 transition-transform duration-300"
+                style={{ backgroundColor: color }}
             />
         </motion.div>
     );
