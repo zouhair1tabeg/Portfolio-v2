@@ -62,7 +62,7 @@ export default function Hero() {
                 {/* ZOUHAIR (Background style: Filled, bold) */}
                 <h1
                     ref={firstNameRef}
-                    className="font-black text-[15vw] leading-[0.8] tracking-tighter text-[#111] md:text-white uppercase perspective-text"
+                    className="font-black text-[15vw] leading-[0.8] tracking-tighter text-white uppercase perspective-text"
                     style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                 >
                     Zouhair
