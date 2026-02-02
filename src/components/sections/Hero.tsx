@@ -49,7 +49,7 @@ export default function Hero() {
     }, []);
 
     return (
-        <section ref={containerRef} className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#050505] text-white">
+        <section ref={containerRef} id="hero" className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#050505] text-white">
 
             {/* Background: Particles */}
             <div className="absolute inset-0 z-0">

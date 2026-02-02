@@ -7,6 +7,8 @@ import { Menu, X } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 
 const LINKS = [
+    { name: "HOME", href: "#hero" },
+    { name: "ABOUT", href: "#about" },
     { name: "PROJECTS", href: "#projects" },
     { name: "SKILLS", href: "#skills" },
     { name: "EXPERIENCE", href: "#experience" },

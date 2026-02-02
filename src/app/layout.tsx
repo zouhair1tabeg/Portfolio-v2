@@ -6,6 +6,7 @@ import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import GrainOverlay from "@/components/ui/GrainOverlay";
 import CustomCursor from "@/components/ui/CustomCursor";
+import ScrollSpy from "@/components/utils/ScrollSpy";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" });
@@ -28,6 +29,7 @@ export default function RootLayout({
         <SmoothScroll>
           <CustomCursor />
           <GrainOverlay />
+          <ScrollSpy />
           <Navigation />
           {children}
           <Footer />
