@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -14,7 +15,8 @@ const projects = [
         tags: ["PHP", "MySQL", "JavaScript"],
         year: "2024",
         link: "https://github.com/zouhair1tabeg",
-        color: "#4F46E5" // Indigo
+        color: "#4F46E5", // Indigo
+        image: "/images/projects/bazaar.png"
     },
     {
         title: "Fitness Tracker",
@@ -23,16 +25,18 @@ const projects = [
         tags: ["Flutter", "Firebase", "HealthKit"],
         year: "2023",
         link: "https://github.com/zouhair1tabeg",
-        color: "#10B981" // Emerald
+        color: "#10B981", // Emerald
+        image: "/images/projects/fitness.png"
     },
     {
-        title: "Chat Application",
-        category: "Real-time • Social",
-        description: "Seamless messaging experience with instant sync.",
-        tags: ["React", "Firebase", "Tailwind"],
-        year: "2024",
-        link: "https://github.com/zouhair1tabeg",
-        color: "#3B82F6" // Blue
+        title: "FocusFlow",
+        category: "iOS • Productivity",
+        description: "All-in-one productivity app balancing daily tasks with integrated prayer times.",
+        tags: ["Swift", "SwiftUI", "CloudKit"],
+        year: "2025",
+        link: "https://github.com/zouhair1tabeg/Focus-Flow",
+        color: "#8B5CF6", // Violet
+        image: "/images/projects/focusflow.png"
     },
     {
         title: "Portfolio V1",
@@ -41,7 +45,8 @@ const projects = [
         tags: ["HTML", "CSS", "GSAP"],
         year: "2023",
         link: "https://github.com/zouhair1tabeg",
-        color: "#EF4444" // Red
+        color: "#EF4444", // Red
+        image: "/images/projects/portfolio-v1.png"
     },
 ];
 
@@ -136,8 +141,17 @@ export default function Projects() {
                                     </div>
                                 </div>
 
-                                {/* Abstract Project Visual (Placeholder) */}
-                                <div className="absolute inset-0 bg-gradient-to-br opacity-50 transition-opacity duration-500 group-hover:opacity-70" style={{ background: `linear-gradient(45deg, ${project.color}, #000)` }} />
+                                {/* Project Featured Image */}
+                                <div className="absolute inset-0">
+                                    <Image
+                                        src={project.image}
+                                        alt={project.title}
+                                        fill
+                                        className="object-cover opacity-60 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-40"
+                                    />
+                                    {/* Gradient Overlay for text readability */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80" />
+                                </div>
 
                                 {/* Number Watermark */}
                                 <span className="absolute top-6 right-8 text-9xl font-bold text-white/5 font-display select-none">
@@ -146,6 +160,18 @@ export default function Projects() {
                             </div>
                         </div>
                     ))}
+
+                    {/* "See More" Link Card */}
+                    <div className="group relative w-[40vw] md:w-[300px] h-full flex-shrink-0 perspective cursor-pointer flex items-center justify-center">
+                        <a
+                            href="https://github.com/zouhair1tabeg"
+                            target="_blank"
+                            className="project-card-inner w-full h-[60%] flex flex-col items-center justify-center bg-zinc-900/50 border border-white/10 rounded-xl hover:border-blue-500/50 hover:bg-zinc-900 transition-all duration-300"
+                        >
+                            <span className="text-xl md:text-2xl font-display font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Voir plus</span>
+                            <span className="text-sm text-gray-400 uppercase tracking-widest group-hover:text-white transition-colors">GitHub Profile ↗</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
