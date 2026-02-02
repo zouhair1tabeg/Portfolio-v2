@@ -212,23 +212,18 @@ function TiltCard({ category }: { category: any }) {
                     </svg>
                 </div>
 
-                {/* 5. Enhanced Spotlight (Dual Color) */}
+                {/* 5. Spotlight Border Effect */}
                 <div
-                    className="absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"
+                    className="absolute inset-0 pointer-events-none rounded-3xl z-50"
                     style={{
-                        background: `radial-gradient(500px circle at top right, ${category.color}15, transparent 50%), radial-gradient(400px circle at bottom left, rgba(255,255,255,0.03), transparent 40%)`
+                        background: `radial-gradient(400px circle at ${x.get() + 300}px ${y.get() + 200}px, rgba(0, 102, 255, 0.4), transparent 40%)`,
+                        // We use state/motion value for coordinates. Since 'x' and 'y' are centered offsets in TiltCard,
+                        // we need to map them back to strict mouse coordinates relative to card for the border gradient.
+                        // Actually, plain CSS mask or a dedicated new mouse listener using local coords is better for "border follow".
                     }}
                 />
-
-                {/* 6. Dynamic Glare Effect */}
-                <motion.div
-                    className="absolute inset-0 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"
-                    style={{
-                        background: `linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%)`,
-                        x: glareX,
-                        y: glareY,
-                    }}
-                />
+                {/* Better Spotlight Implementation: */}
+                <SpotlightBorder />
 
                 {/* Content */}
                 <div className="relative z-20 flex flex-col gap-6 h-full justify-between" style={{ transform: "translateZ(30px)" }}>
@@ -322,5 +317,50 @@ function MagneticChip({ text, color }: { text: string, color: string }) {
                 style={{ backgroundColor: color }}
             />
         </motion.div>
+    );
+}
+
+// Spotlight Helper Component
+function SpotlightBorder() {
+    const divRef = useRef<HTMLDivElement>(null);
+    const [opacity, setOpacity] = useState(0);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!divRef.current) return;
+        const rect = divRef.current.parentElement!.getBoundingClientRect();
+        setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    };
+
+    return (
+        <div
+            ref={divRef}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setOpacity(1)}
+            onMouseLeave={() => setOpacity(0)}
+            className="absolute inset-0 z-50 rounded-3xl pointer-events-auto"
+        >
+            <div
+                className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-300"
+                style={{
+                    opacity,
+                    background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(0, 102, 255, 0.15), transparent 40%)`
+                }}
+            />
+            {/* Border glow specific */}
+            <div
+                className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-300"
+                style={{
+                    opacity,
+                    background: `radial-gradient(300px circle at ${position.x}px ${position.y}px, rgba(0, 102, 255, 0.6), transparent 40%)`,
+                    maskImage: "linear-gradient(black, black), linear-gradient(black, black)",
+                    maskComposite: "exclude",
+                    WebkitMaskComposite: "xor",
+                    padding: "1px", // Border width
+                }}
+            >
+                <div className="w-full h-full bg-transparent rounded-3xl" />
+            </div>
+        </div>
     );
 }

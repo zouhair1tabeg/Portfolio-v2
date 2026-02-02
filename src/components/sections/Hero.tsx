@@ -6,94 +6,165 @@ import ParticlesBackground from "@/components/canvas/ParticlesBackground";
 
 export default function Hero() {
     const containerRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
     const firstNameRef = useRef<HTMLHeadingElement>(null);
     const lastNameRef = useRef<HTMLHeadingElement>(null);
     const subHeaderRef = useRef<HTMLDivElement>(null);
-    const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Parallax Logic
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!contentRef.current) return;
+        const { clientX, clientY, currentTarget } = e;
+        const { width, height } = currentTarget.getBoundingClientRect();
+
+        const x = (clientX / width - 0.5) * 40; // Move range
+        const y = (clientY / height - 0.5) * 40;
+
+        gsap.to(contentRef.current, {
+            x: -x, // Inverse movement for depth
+            y: -y,
+            rotateX: y * 0.05,
+            rotateY: -x * 0.05,
+            duration: 1,
+            ease: "power2.out"
+        });
+    };
+
+    const handleMouseLeave = () => {
+        gsap.to(contentRef.current, {
+            x: 0,
+            y: 0,
+            rotateX: 0,
+            rotateY: 0,
+            duration: 1,
+            ease: "power2.out"
+        });
+    };
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+            const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
 
-            // Ensure elements are initially hidden/positioned
-            gsap.set([firstNameRef.current, lastNameRef.current], {
-                y: 100,
-                opacity: 0,
-                rotateX: 10
-            });
-            gsap.set([subHeaderRef.current, scrollRef.current], {
-                opacity: 0,
-                y: 20
-            });
+            // Split Text Animation logic
+            // Since we don't have SplitText plugin (paid), we animate manual spans
+            const firstChars = firstNameRef.current?.querySelectorAll(".char");
+            const lastChars = lastNameRef.current?.querySelectorAll(".char");
 
-            // 1. Text Reveal Animation
-            tl.to([firstNameRef.current, lastNameRef.current], {
-                y: 0,
+            // Random Fly-in
+            tl.fromTo([...(firstChars || []), ...(lastChars || [])], {
+                opacity: 0,
+                z: () => Math.random() * 500 - 250, // Random depth
+                x: () => Math.random() * 200 - 100,
+                y: () => Math.random() * 200 - 100,
+                rotateX: () => Math.random() * 90 - 45,
+                filter: "blur(10px)"
+            }, {
                 opacity: 1,
+                z: 0,
+                x: 0,
+                y: 0,
                 rotateX: 0,
-                duration: 1.8,
-                stagger: 0.2, // "Zouhair" then "Tabeg"
-                ease: "power3.out"
+                filter: "blur(0px)",
+                duration: 2.5,
+                stagger: {
+                    amount: 0.5,
+                    from: "random"
+                }
             })
-                // 2. Sub-header & UI Reveal
-                .to([subHeaderRef.current, scrollRef.current], {
+                .fromTo(subHeaderRef.current, {
+                    y: 20,
+                    opacity: 0
+                }, {
                     y: 0,
                     opacity: 1,
-                    duration: 1,
-                    stagger: 0.1,
-                }, "-=1.0");
+                    duration: 1.5
+                }, "-=1.5");
 
         }, containerRef);
 
         return () => ctx.revert();
     }, []);
 
-    return (
-        <section ref={containerRef} id="hero" className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#050505] text-white">
+    // Helper to split text
+    const SplitText = ({ text, className, style }: { text: string, className?: string, style?: any }) => (
+        <span className={`inline-block whitespace-nowrap ${className}`} style={style}>
+            {text.split("").map((char, i) => (
+                <span key={i} className="char inline-block" style={{ display: "inline-block" }}>
+                    {char}
+                </span>
+            ))}
+        </span>
+    );
 
-            {/* Background: Particles */}
+    return (
+        <section
+            ref={containerRef}
+            id="hero"
+            className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#050505] text-white [perspective:2000px]"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+        >
+
+            {/* Background: Particles with Warp Speed */}
             <div className="absolute inset-0 z-0">
                 <ParticlesBackground />
             </div>
 
-            {/* Typography Centerpiece */}
-            <div className="relative z-10 flex flex-col items-center justify-center w-full h-full mix-blend-difference pointer-events-none select-none [perspective:1000px]">
+            {/* Grain & Glitch Overlay */}
+            <div className="absolute inset-0 z-[1] opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
 
-                {/* ZOUHAIR (Background style: Filled, bold) */}
-                <h1
-                    ref={firstNameRef}
-                    className="font-black text-[15vw] leading-[0.8] tracking-tighter text-white uppercase perspective-text"
-                    style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                    Zouhair
+            {/* Typography Centerpiece (Parallax Target) */}
+            <div ref={contentRef} className="relative z-10 flex flex-col items-center justify-center w-full h-full mix-blend-difference pointer-events-none select-none [transform-style:preserve-3d]">
+
+                {/* ZOUHAIR */}
+                <h1 ref={firstNameRef} className="relative z-10">
+                    <SplitText
+                        text="Zouhair"
+                        className="font-black text-[15vw] leading-[0.8] tracking-tighter text-white uppercase"
+                        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                    />
                 </h1>
 
-                {/* TABEG (Foreground style: Outline) */}
-                <h1
-                    ref={lastNameRef}
-                    className="font-black text-[15vw] leading-[0.8] tracking-tighter uppercase relative"
-                    style={{
-                        fontFamily: "'Space Grotesk', sans-serif",
-                        WebkitTextStroke: "1px rgba(255,255,255,0.8)",
-                        color: "transparent"
-                    }}
-                >
-                    Tabeg
+                {/* TABEG (Spotlight Effect) */}
+                <h1 ref={lastNameRef} className="relative z-10 group pointer-events-auto cursor-default">
+                    {/* Outline Base */}
+                    <span
+                        className="font-black text-[15vw] leading-[0.8] tracking-tighter uppercase relative block transition-colors duration-500 ease-out group-hover:text-[#0066FF]"
+                        style={{
+                            fontFamily: "'Space Grotesk', sans-serif",
+                            color: "transparent",
+                            WebkitTextStroke: "2px rgba(255,255,255,0.5)"
+                        }}
+                    >
+                        <SplitText text="Tabeg" />
+                    </span>
+
+                    {/* Glow Overlay (only visible on hover via CSS/Group) */}
+                    <div className="absolute inset-0 blur-[40px] opacity-0 group-hover:opacity-40 transition-opacity duration-500 bg-[#0066FF] z-[-1]" />
                 </h1>
 
-                {/* Sub-header */}
-                <div ref={subHeaderRef} className="mt-12 md:mt-16 flex flex-col items-center gap-2 pointer-events-auto">
-                    <p className="text-sm md:text-base tracking-[0.4em] uppercase text-gray-400 font-light">
+                {/* Magnetic Sub-header */}
+                <div ref={subHeaderRef} className="mt-16 pointer-events-auto">
+                    {/* Simple Magnetic Effect via CSS hover/transform in parent or just subtle float */}
+                    <p className="text-sm md:text-base tracking-[0.4em] uppercase text-gray-400 font-light border border-white/10 px-6 py-3 rounded-full backdrop-blur-md hover:bg-white/5 hover:border-[#0066FF]/50 transition-all duration-300">
                         Developer <span className="text-[#0066FF] mx-2">|</span> Web & Mobile
                     </p>
                 </div>
             </div>
 
-            {/* Scroll Indicator */}
-            <div ref={scrollRef} className="absolute bottom-12 flex flex-col items-center gap-2 z-20 pointer-events-none mix-blend-difference text-white">
-                <span className="text-[10px] uppercase tracking-[0.2em] opacity-60">Scroll</span>
-                <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent opacity-60" />
+            {/* Dynamic Scroll Indicator */}
+            <div className="absolute bottom-12 flex flex-col items-center gap-2 z-20 pointer-events-none mix-blend-difference text-white">
+                <div className="w-[1px] h-16 bg-white/20 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1/2 bg-[#0066FF] animate-[scrollDrop_2s_infinite]" />
+                </div>
             </div>
+
+            <style jsx global>{`
+                @keyframes scrollDrop {
+                    0% { transform: translateY(-100%); }
+                    100% { transform: translateY(200%); }
+                }
+            `}</style>
 
         </section>
     );

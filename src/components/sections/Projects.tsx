@@ -119,16 +119,24 @@ export default function Projects() {
                             key={idx}
                             className="group relative w-[80vw] md:w-[600px] h-full flex-shrink-0 perspective cursor-pointer"
                         >
-                            <div className="project-card-inner w-full h-full bg-zinc-900 border border-white/10 rounded-xl overflow-hidden relative transition-all duration-500 group-hover:border-white/30 group-hover:scale-[1.02] shadow-2xl">
+                            <div
+                                className="project-card-inner w-full h-full bg-zinc-900 border border-white/10 rounded-xl overflow-hidden relative shadow-2xl transition-all duration-500"
+                                data-cursor="carousel" // Trigger custom cursor arrow
+                            >
                                 {/* Card Content */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10 flex flex-col justify-end p-8 md:p-12">
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10 flex flex-col justify-end p-8 md:p-12 pointer-events-none">
                                     <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                                         <div className="flex justify-between items-end mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                                             <span className="text-xs uppercase tracking-widest text-white/60">{project.year}</span>
-                                            <a href={project.link} target="_blank" className="text-xs uppercase tracking-widest border-b border-white hover:text-blue-400 hover:border-blue-400 transition-colors">Details ↗</a>
+                                            <a href={project.link} target="_blank" className="text-xs uppercase tracking-widest border-b border-white hover:text-blue-400 hover:border-blue-400 transition-colors pointer-events-auto">Details ↗</a>
                                         </div>
 
-                                        <h3 className="text-4xl md:text-5xl font-bold mb-3 font-display">{project.title}</h3>
+                                        <h3 className="text-4xl md:text-5xl font-bold mb-3 font-display relative inline-block">
+                                            {project.title}
+                                            {/* Glitch Overlay Text */}
+                                            <span className="absolute top-0 left-0 -ml-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch text-[#0066FF] mix-blend-screen" aria-hidden="true">{project.title}</span>
+                                            <span className="absolute top-0 left-0 ml-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2 text-[#FF0000] mix-blend-screen" aria-hidden="true">{project.title}</span>
+                                        </h3>
                                         <p className="text-lg text-gray-300 font-light mb-6 line-clamp-2 md:line-clamp-none opacity-80 group-hover:opacity-100 transition-opacity">{project.description}</p>
 
                                         <div className="flex flex-wrap gap-2">
@@ -141,16 +149,38 @@ export default function Projects() {
                                     </div>
                                 </div>
 
-                                {/* Project Featured Image */}
-                                <div className="absolute inset-0">
-                                    <Image
-                                        src={project.image}
-                                        alt={project.title}
-                                        fill
-                                        className="object-cover opacity-60 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-40"
-                                    />
-                                    {/* Gradient Overlay for text readability */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80" />
+                                {/* Project Featured Image with RGB Shift */}
+                                <div className="absolute inset-0 overflow-hidden">
+                                    {/* Base Image */}
+                                    <div className="relative w-full h-full transition-transform duration-700 group-hover:scale-110">
+                                        <Image
+                                            src={project.image}
+                                            alt={project.title}
+                                            fill
+                                            className="object-cover opacity-60 group-hover:opacity-40"
+                                        />
+                                    </div>
+
+                                    {/* RGB Shift Layer 1 (Red) */}
+                                    <div className="absolute inset-0 translate-x-1 opacity-0 group-hover:opacity-30 mix-blend-screen transition-opacity duration-100 pointer-events-none">
+                                        <Image src={project.image} alt="" fill className="object-cover filter sepia hue-rotate-[-50deg] saturate-200" />
+                                    </div>
+                                    {/* RGB Shift Layer 2 (Blue) */}
+                                    <div className="absolute inset-0 -translate-x-1 opacity-0 group-hover:opacity-30 mix-blend-screen transition-opacity duration-100 pointer-events-none">
+                                        <Image src={project.image} alt="" fill className="object-cover filter sepia hue-rotate-[180deg] saturate-200" />
+                                    </div>
+
+                                    {/* Text Reveal "VIEW PROJECT" */}
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                                        <div className="overflow-hidden">
+                                            <span className="block text-4xl font-black italic uppercase tracking-widest text-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 delay-100 mix-blend-overlay">
+                                                View Project
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Gradient Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80 pointer-events-none" />
                                 </div>
 
                                 {/* Number Watermark */}
