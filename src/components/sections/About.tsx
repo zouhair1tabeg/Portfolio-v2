@@ -149,7 +149,7 @@ export default function About() {
 
                         {/* Floating Data Cards (Overlapping) */}
                         <div ref={statsRef} className="absolute -bottom-12 -right-6 md:-right-16 flex flex-col gap-4 z-20">
-                            <DataCard label="Years Exp." value="3+" sub="Design & Dev" />
+                            <DataCard label="Years Exp." value="3+" sub="Web & Mobile Dev" />
                             <DataCard label="Projects" value="20+" sub="Delivered" delay={0.2} />
                         </div>
 
@@ -196,12 +196,12 @@ export default function About() {
                                 </p>
                             </div>
 
-                            <div className="flex items-center gap-4 text-sm font-mono text-gray-500 pl-6">
+                            {/* <div className="flex items-center gap-4 text-sm font-mono text-gray-500 pl-6">
                                 <MapPin size={16} className="text-[#0066FF]" />
                                 <span>32.5574° N, 6.5186° W</span>
                                 <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
                                 <span>GMT+1</span>
-                            </div>
+                            </div> */}
                         </div>
 
                     </div>
