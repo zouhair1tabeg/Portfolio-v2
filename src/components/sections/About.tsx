@@ -121,10 +121,10 @@ export default function About() {
                         {/* Main Image Container */}
                         <div ref={imageWrapperRef} className="relative aspect-[3/4] w-full overflow-hidden shadow-2xl bg-gray-900 origin-bottom">
                             <Image
-                                src="/images/profile.jpg"
+                                src="/images/profile-v2.jpg"
                                 alt="Zouhair Tabeg"
                                 fill
-                                className="about-img object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-700"
+                                className="about-img object-cover transition-all duration-700"
                                 priority
                             />
                             {/* Texture Overlay */}

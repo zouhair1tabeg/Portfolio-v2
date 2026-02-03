@@ -149,38 +149,20 @@ export default function Projects() {
                                     </div>
                                 </div>
 
-                                {/* Project Featured Image with RGB Shift */}
+                                {/* Project Featured Image - Clear on Hover */}
                                 <div className="absolute inset-0 overflow-hidden">
-                                    {/* Base Image */}
-                                    <div className="relative w-full h-full transition-transform duration-700 group-hover:scale-110">
+                                    <div className="relative w-full h-full transition-transform duration-700 group-hover:scale-105">
                                         <Image
                                             src={project.image}
                                             alt={project.title}
                                             fill
-                                            className="object-cover opacity-60 group-hover:opacity-40"
+                                            className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500"
                                         />
                                     </div>
 
-                                    {/* RGB Shift Layer 1 (Red) */}
-                                    <div className="absolute inset-0 translate-x-1 opacity-0 group-hover:opacity-30 mix-blend-screen transition-opacity duration-100 pointer-events-none">
-                                        <Image src={project.image} alt="" fill className="object-cover filter sepia hue-rotate-[-50deg] saturate-200" />
-                                    </div>
-                                    {/* RGB Shift Layer 2 (Blue) */}
-                                    <div className="absolute inset-0 -translate-x-1 opacity-0 group-hover:opacity-30 mix-blend-screen transition-opacity duration-100 pointer-events-none">
-                                        <Image src={project.image} alt="" fill className="object-cover filter sepia hue-rotate-[180deg] saturate-200" />
-                                    </div>
+                                    {/* Stronger Gradient for Readability */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90 pointer-events-none" />
 
-                                    {/* Text Reveal "VIEW PROJECT" */}
-                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                                        <div className="overflow-hidden">
-                                            <span className="block text-4xl font-black italic uppercase tracking-widest text-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 delay-100 mix-blend-overlay">
-                                                View Project
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Gradient Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80 pointer-events-none" />
                                 </div>
 
                                 {/* Number Watermark */}
