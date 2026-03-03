@@ -83,9 +83,7 @@ export default function ParticlesBackground() {
                 <ParticleField />
 
                 <EffectComposer disableNormalPass>
-                    {/* Glow for that Sci-Fi feel */}
                     <Bloom luminanceThreshold={0} mipmapBlur intensity={0.5} radius={0.8} />
-                    {/* Cinematic Vignette */}
                     <Vignette eskil={false} offset={0.1} darkness={1.1} />
                 </EffectComposer>
             </Canvas>
