@@ -82,7 +82,7 @@ export default function ParticlesBackground() {
             <Canvas camera={{ position: [0, 0, 10], fov: 60 }} gl={{ antialias: false }}>
                 <ParticleField />
 
-                <EffectComposer disableNormalPass>
+                <EffectComposer>
                     <Bloom luminanceThreshold={0} mipmapBlur intensity={0.5} radius={0.8} />
                     <Vignette eskil={false} offset={0.1} darkness={1.1} />
                 </EffectComposer>
