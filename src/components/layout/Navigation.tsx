@@ -9,8 +9,8 @@ import MagneticButton from "@/components/ui/MagneticButton";
 const LINKS = [
     { name: "HOME", href: "#hero" },
     { name: "ABOUT", href: "#about" },
-    { name: "PROJECTS", href: "#projects" },
     { name: "SKILLS", href: "#skills" },
+    { name: "PROJECTS", href: "#projects" },
     { name: "EXPERIENCE", href: "#experience" },
     { name: "CONTACT", href: "#contact" },
 ];
