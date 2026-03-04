@@ -121,7 +121,7 @@ export default function About() {
                         {/* Main Image Container */}
                         <div ref={imageWrapperRef} className="relative aspect-[3/4] w-full overflow-hidden shadow-2xl bg-gray-900 origin-bottom">
                             <Image
-                                src="/images/profile-v2.jpg"
+                                src="/images/zh.png"
                                 alt="Zouhair Tabeg"
                                 fill
                                 className="about-img object-cover transition-all duration-700"
