@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, ReactNode, MouseEvent, useEffect } from "react";
-import gsap from "gsap";
+import { useRef, ReactNode, useEffect } from "react";
+import { gsap } from "@/lib/gsap";
 
 interface MagneticWrapperProps {
     children: ReactNode;
@@ -47,11 +47,6 @@ export default function MagneticWrapper({
                 xTo(0);
                 yTo(0);
             }
-        };
-
-        const handleMouseLeave = () => {
-            xTo(0);
-            yTo(0);
         };
 
         window.addEventListener("mousemove", handleMouseMove);

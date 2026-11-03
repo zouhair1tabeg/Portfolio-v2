@@ -1,12 +1,29 @@
 @import "tailwindcss";
 
-@theme {
+/*
+ * `inline` is required because next/font defines --font-* on <body>, and a
+ * non-inline theme variable would resolve them too early on :root.
+ */
+@theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-hero: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
 
-  --color-primary: #0066FF;
+@theme {
+  /* Single source of truth for the accent colour. */
+  --accent: #C6FF3D;
+  --color-accent: var(--accent);
+
+  --color-ink: #050506;
+  --color-ink-soft: #0A0B0C;
   --color-zinc-950: #0A0A0A;
-  /* Deep Black Override if needed, or just usage */
+
+  /* Fluid display size shared by both name lines. */
+  --text-hero: clamp(4rem, 22vw, 26rem);
+  --text-hero--line-height: 0.8;
+  --text-hero--letter-spacing: -0.06em;
 }
 
 /* Custom Utilities if needed */
@@ -14,27 +31,49 @@
   text-wrap: balance;
 }
 
-body {
-  background-color: #000;
-  color: #fff;
-  font-family: var(--font-sans);
-  cursor: none;
+@utility bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
 }
 
-a,
-button,
-input,
-textarea {
-  cursor: none;
-}
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-display);
+  body {
+    background-color: var(--color-ink);
+    color: #fff;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    cursor: none;
+  }
+
+  a,
+  button,
+  input,
+  textarea {
+    cursor: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--color-ink);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  }
 }
 
 /* --- Animations --- */
@@ -65,6 +104,38 @@ h6 {
   }
 }
 
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes role-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes intro-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @utility animate-spin-slow {
   animation: spin-slow 3s linear infinite;
 }
@@ -75,4 +146,57 @@ h6 {
 
 @utility animate-marquee-reverse {
   animation: marquee-reverse 20s linear infinite;
+}
+
+@utility animate-role-in {
+  /* No `both`: if a browser throttles the animation the text stays visible. */
+  animation: role-in 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes marquee-half {
+  from {
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@utility animate-marquee-half {
+  animation: marquee-half 42s linear infinite;
+}
+
+/* Outlined variant of the display name. */
+.hero-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.72);
+  transition: color 400ms ease;
+}
+
+.hero-outline:hover {
+  color: var(--accent);
+  -webkit-text-stroke-color: transparent;
+}
+
+@media (min-width: 768px) {
+  .hero-outline {
+    -webkit-text-stroke-width: 2.5px;
+  }
+}
+
+/* Returning visitors: the inline script in layout.tsx hides the intro before paint. */
+html[data-intro="seen"] [data-hero-intro] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -14,27 +14,43 @@ const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
-  title: "Tabeg Zouhair | Web & Mobile Developer",
-  description: "Portfolio of Tabeg Zouhair, a web and mobile developer creating modern digital experiences.",
+    title: "Tabeg Zouhair | Web & Mobile Developer",
+    description: "Portfolio of Tabeg Zouhair, a web and mobile developer creating modern digital experiences.",
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className={`${inter.variable} ${montserrat.variable} ${spaceGrotesk.variable} ${playfair.variable} bg-black text-white antialiased font-sans cursor-none`}>
-        <SmoothScroll>
-          <CustomCursor />
-          <GrainOverlay />
-          <ScrollSpy />
-          <Navigation />
-          {children}
-          <Footer />
-        </SmoothScroll>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en" suppressHydrationWarning>
+            <body
+                className={`${inter.variable} ${montserrat.variable} ${spaceGrotesk.variable} ${playfair.variable} bg-black text-white antialiased font-sans cursor-none`}
+            >
+                {/* Hides the intro for returning visitors before the first paint. */}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `try{if(sessionStorage.getItem("zt:intro:v1")==="1"){document.documentElement.dataset.intro="seen"}}catch(e){}`,
+                    }}
+                />
+
+                <a
+                    href="#main-content"
+                    className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-accent focus:px-5 focus:py-3 focus:text-xs focus:font-bold focus:uppercase focus:tracking-widest focus:text-ink"
+                >
+                    Aller au contenu
+                </a>
+
+                <SmoothScroll>
+                    <CustomCursor />
+                    <GrainOverlay />
+                    <ScrollSpy />
+                    <Navigation />
+                    {children}
+                    <Footer />
+                </SmoothScroll>
+            </body>
+        </html>
+    );
 }

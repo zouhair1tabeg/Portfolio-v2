@@ -2,10 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "@/lib/gsap";
 
-gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
     {
@@ -79,7 +77,7 @@ export default function Projects() {
             });
 
             // Parallax effects on cards
-            gsap.utils.toArray(".project-card-inner").forEach((card: any) => {
+            gsap.utils.toArray<HTMLElement>(".project-card-inner").forEach((card) => {
                 gsap.to(card, {
                     backgroundPosition: "100% 50%",
                     ease: "none",
@@ -134,7 +132,7 @@ export default function Projects() {
                                         <h3 className="text-4xl md:text-5xl font-bold mb-3 font-display relative inline-block">
                                             {project.title}
                                             {/* Glitch Overlay Text */}
-                                            <span className="absolute top-0 left-0 -ml-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch text-[#0066FF] mix-blend-screen" aria-hidden="true">{project.title}</span>
+                                            <span className="absolute top-0 left-0 -ml-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch text-accent mix-blend-screen" aria-hidden="true">{project.title}</span>
                                             <span className="absolute top-0 left-0 ml-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2 text-[#FF0000] mix-blend-screen" aria-hidden="true">{project.title}</span>
                                         </h3>
                                         <p className="text-lg text-gray-300 font-light mb-6 line-clamp-2 md:line-clamp-none opacity-80 group-hover:opacity-100 transition-opacity">{project.description}</p>

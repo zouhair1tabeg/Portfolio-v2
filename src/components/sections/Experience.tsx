@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
+import { gsap } from "@/lib/gsap";
 import { Briefcase } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
 
 const EXPERIENCE_DATA = [
     {
@@ -141,8 +139,8 @@ export default function Experience() {
                 {/* Heading */}
                 <div className="mb-24 md:pl-12">
                     <div className="flex items-center gap-3 mb-6">
-                        <span className="h-px w-12 bg-[#0066FF]"></span>
-                        <span className="text-[#0066FF] font-mono uppercase tracking-widest text-xs">Career Timeline</span>
+                        <span className="h-px w-12 bg-accent"></span>
+                        <span className="text-accent font-mono uppercase tracking-widest text-xs">Career Timeline</span>
                     </div>
                     <h2 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                         Digital <span className="text-transparent" style={{ WebkitTextStroke: "1px white" }}>Evolution</span>
@@ -157,8 +155,8 @@ export default function Experience() {
                         <svg className="w-full h-full overflow-visible">
                             <defs>
                                 <linearGradient id="line-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stopColor="#0066FF" />
-                                    <stop offset="50%" stopColor="#0066FF" />
+                                    <stop offset="0%" stopColor="var(--accent)" />
+                                    <stop offset="50%" stopColor="var(--accent)" />
                                     <stop offset="100%" stopColor="rgba(0,0,0,0)" />
                                 </linearGradient>
                                 <filter id="glow">
@@ -184,7 +182,7 @@ export default function Experience() {
                                 ref={runnerRef}
                                 cx="0" cy="0" r="6"
                                 fill="white"
-                                className="filter drop-shadow-[0_0_15px_#0066FF]"
+                                className="filter drop-shadow-[0_0_15px_var(--accent)]"
                             />
                         </svg>
                     </div>
@@ -199,7 +197,7 @@ export default function Experience() {
                                     } justify-start pl-16 md:pl-0`}
                             >
                                 {/* Magnetic Dot (Absolute Centered) */}
-                                <div className="absolute left-[20px] md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#050505] border-2 border-[#0066FF] z-20 shadow-[0_0_20px_#0066FF]" />
+                                <div className="absolute left-[20px] md:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[#050505] border-2 border-accent z-20 shadow-[0_0_20px_var(--accent)]" />
 
                                 {/* The Card */}
                                 <AeroCard item={item} />
@@ -215,8 +213,10 @@ export default function Experience() {
     );
 }
 
+type ExperienceItem = (typeof EXPERIENCE_DATA)[number];
+
 // Aero-Tech Card Component
-function AeroCard({ item }: { item: any }) {
+function AeroCard({ item }: { item: ExperienceItem }) {
     const cardRef = useRef<HTMLDivElement>(null);
     const yearRef = useRef<HTMLDivElement>(null);
 
@@ -251,7 +251,7 @@ function AeroCard({ item }: { item: any }) {
             onMouseLeave={handleMouseLeave}
             className={`
                 relative w-full md:w-[45%] bg-[#0A0A0A]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-8 
-                group transition-all duration-300 hover:border-[#0066FF]/50 hover:shadow-[0_0_50px_-10px_rgba(0,102,255,0.15)]
+                group transition-all duration-300 hover:border-accent/50 hover:shadow-[0_0_50px_-10px_rgba(198,255,61,0.15)]
                 perspective-1000
             `}
         >
@@ -267,19 +267,19 @@ function AeroCard({ item }: { item: any }) {
             {/* Content */}
             <div className="relative z-10">
                 <div className="flex items-center justify-between mb-6">
-                    <span className="flex items-center gap-2 text-[#0066FF] text-xs font-bold uppercase tracking-widest border border-[#0066FF]/20 px-3 py-1 rounded-full bg-[#0066FF]/5">
+                    <span className="flex items-center gap-2 text-accent text-xs font-bold uppercase tracking-widest border border-accent/20 px-3 py-1 rounded-full bg-accent/5">
                         <Briefcase size={12} />
                         {item.type}
                     </span>
                     {item.current && (
                         <span className="relative flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0066FF] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0066FF]"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
                         </span>
                     )}
                 </div>
 
-                <h3 className="text-3xl font-bold text-white mb-2 font-display group-hover:text-[#0066FF] transition-colors">
+                <h3 className="text-3xl font-bold text-white mb-2 font-display group-hover:text-accent transition-colors">
                     {item.title}
                 </h3>
                 <p className="text-xl text-gray-400 font-light mb-4 flex items-center gap-2">

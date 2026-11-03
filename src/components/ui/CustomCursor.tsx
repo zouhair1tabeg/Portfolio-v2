@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
 import { ArrowUpRight } from "lucide-react";
+import { gsap } from "@/lib/gsap";
+import { getAccent } from "@/lib/accent";
 
 export default function CustomCursor() {
     const cursorRef = useRef<HTMLDivElement>(null);
@@ -19,8 +20,6 @@ export default function CustomCursor() {
         // Position setters
         const xSet = gsap.quickSetter(cursor, "x", "px");
         const ySet = gsap.quickSetter(cursor, "y", "px");
-        const xRingSet = gsap.quickSetter(ring, "x", "px");
-        const yRingSet = gsap.quickSetter(ring, "y", "px");
 
         const moveCursor = (e: MouseEvent) => {
             xSet(e.clientX - 4); // Center dot (8px / 2)
@@ -62,9 +61,11 @@ export default function CustomCursor() {
         const arrow = arrowRef.current;
         if (!ring || !cursor || !arrow) return;
 
+        const accent = getAccent();
+
         if (state === "pointer") {
             // Hover Link: Expand ring
-            gsap.to(ring, { scale: 1.5, opacity: 0.5, backgroundColor: "#0066FF", borderColor: "transparent", duration: 0.3 });
+            gsap.to(ring, { scale: 1.5, opacity: 0.5, backgroundColor: accent, borderColor: "transparent", duration: 0.3 });
             gsap.to(cursor, { scale: 0, duration: 0.3 }); // Hide dot
             gsap.to(arrow, { scale: 0, opacity: 0 });
         } else if (state === "carousel") {
@@ -75,7 +76,7 @@ export default function CustomCursor() {
         } else {
             // Default: Small Dot + Ring
             gsap.to(ring, { scale: 1, opacity: 0.5, backgroundColor: "transparent", borderColor: "#ffffff", duration: 0.3 });
-            gsap.to(cursor, { scale: 1, backgroundColor: "#0066FF", duration: 0.3 });
+            gsap.to(cursor, { scale: 1, backgroundColor: accent, duration: 0.3 });
             gsap.to(arrow, { scale: 0, opacity: 0 });
         }
     }, [state]);
@@ -85,7 +86,7 @@ export default function CustomCursor() {
             {/* Center Dot */}
             <div
                 ref={cursorRef}
-                className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[#0066FF] will-change-transform"
+                className="fixed top-0 left-0 w-2 h-2 rounded-full bg-accent will-change-transform"
             />
 
             {/* Outer Ring */}

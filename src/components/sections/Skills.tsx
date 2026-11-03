@@ -1,19 +1,18 @@
 "use client";
 
-import { useRef, useState, useEffect, ReactNode } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState, useEffect } from "react";
+import { gsap } from "@/lib/gsap";
 import { Code2, Database, Layout, Smartphone, Terminal, Cpu } from "lucide-react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import { ACCENT_FALLBACK } from "@/lib/accent";
 
-gsap.registerPlugin(ScrollTrigger);
 
 const TOOLBOX_CATEGORIES = [
     {
         id: "frontend",
         label: "Frontend",
         icon: Layout, // Blue
-        color: "#0066FF",
+        color: ACCENT_FALLBACK,
         level: 95,
         skills: ["React.js", "Next.js", "TypeScript", "Tailwind CSS", "GSAP"]
     },
@@ -121,7 +120,7 @@ export default function Skills() {
                 {/* 2. Kinetic Typography Title */}
                 <div className="text-center mb-24">
                     <div className="inline-flex items-center gap-2 mb-4">
-                        <span className="w-2 h-2 bg-[#0066FF] rounded-full animate-pulse" />
+                        <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
                         <span className="text-xs font-mono uppercase tracking-[0.4em] text-gray-400">Capabilities</span>
                     </div>
                     <h2 ref={titleRef} className="text-6xl md:text-8xl font-black tracking-tighter uppercase overflow-hidden" aria-label={titleText} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -143,8 +142,10 @@ export default function Skills() {
     );
 }
 
+type ToolboxCategory = (typeof TOOLBOX_CATEGORIES)[number];
+
 // 3D Tilt Card with GSAP Parallax & Glare
-function TiltCard({ category }: { category: any }) {
+function TiltCard({ category }: { category: ToolboxCategory }) {
     const cardRef = useRef<HTMLDivElement>(null);
     const [hover, setHover] = useState(false);
 
@@ -154,10 +155,6 @@ function TiltCard({ category }: { category: any }) {
     // Smoother, subtler rotation for "Heavy Premium" feel
     const rotateX = useTransform(y, [-100, 100], [5, -5]);
     const rotateY = useTransform(x, [-100, 100], [-5, 5]);
-
-    // Glare position (moves opposite to mouse)
-    const glareX = useTransform(x, [-100, 100], [100, 0]);
-    const glareY = useTransform(y, [-100, 100], [100, 0]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!cardRef.current) return;

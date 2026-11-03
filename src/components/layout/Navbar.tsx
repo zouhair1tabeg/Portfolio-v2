@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
+import { gsap } from "@/lib/gsap";
 import { Menu, X } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import Link from "next/link";
@@ -60,7 +60,7 @@ export default function Navbar() {
                 <MagneticButton>
                     <button
                         onClick={toggleMenu}
-                        className="text-white mix-blend-difference hover:text-[#0066FF] transition-colors p-4 block rounded-full"
+                        className="text-white mix-blend-difference hover:text-accent transition-colors p-4 block rounded-full"
                         aria-label="Toggle Menu"
                     >
                         {isOpen ? <X size={32} /> : <Menu size={32} />}

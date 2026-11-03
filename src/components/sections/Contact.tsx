@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Github, Linkedin, Mail, Copy, ArrowUpRight, Check, Loader2 } from "lucide-react";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { Github, Linkedin, Mail, Copy, ArrowUpRight, Check, Loader2, type LucideIcon } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import clsx from "clsx";
 
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
     const sectionRef = useRef<HTMLElement>(null);
@@ -104,10 +102,10 @@ export default function Contact() {
                 <div className="w-full mb-24 relative mix-blend-difference">
                     <h2 ref={titleRef} className="text-[12vw] font-black leading-none text-transparent relative" style={{ fontFamily: "'Space Grotesk', sans-serif", WebkitTextStroke: "1px rgba(255,255,255,0.5)" }}>
                         <span className="relative block">
-                            LET'S TALK
+                            LET&apos;S TALK
                             {/* Fill Layer */}
-                            <span className="text-fill absolute left-0 bottom-0 w-full overflow-hidden text-[#0066FF] h-0 transition-[height]" style={{ WebkitTextStroke: "0px" }}>
-                                LET'S TALK
+                            <span className="text-fill absolute left-0 bottom-0 w-full overflow-hidden text-accent h-0 transition-[height]" style={{ WebkitTextStroke: "0px" }}>
+                                LET&apos;S TALK
                             </span>
                         </span>
                     </h2>
@@ -118,7 +116,7 @@ export default function Contact() {
 
                     {/* Success Gradient Background */}
                     <div className={clsx(
-                        "absolute -inset-10 bg-[conic-gradient(from_0deg,transparent_0deg,#0066FF_360deg)] opacity-0 blur-2xl transition-opacity duration-1000",
+                        "absolute -inset-10 bg-[conic-gradient(from_0deg,transparent_0deg,var(--accent)_360deg)] opacity-0 blur-2xl transition-opacity duration-1000",
                         formState === "success" && "opacity-20 animate-spin-slow"
                     )} />
 
@@ -136,8 +134,8 @@ export default function Contact() {
                                     disabled={formState !== "idle"}
                                     className={clsx(
                                         "relative flex items-center justify-center rounded-full transition-all duration-500 overflow-hidden",
-                                        formState === "idle" ? "w-24 h-24 bg-white text-black hover:bg-[#0066FF] hover:text-white" : "",
-                                        formState === "loading" ? "w-24 h-24 bg-[#001133] border border-[#0066FF]" : "",
+                                        formState === "idle" ? "w-24 h-24 bg-white text-black hover:bg-accent hover:text-white" : "",
+                                        formState === "loading" ? "w-24 h-24 bg-accent/10 border border-accent" : "",
                                         formState === "success" ? "w-24 h-24 bg-green-500 text-white" : ""
                                     )}
                                 >
@@ -145,7 +143,7 @@ export default function Contact() {
                                         <ArrowUpRight size={32} className="group-hover:rotate-45 transition-transform duration-300" />
                                     )}
                                     {formState === "loading" && (
-                                        <Loader2 size={32} className="animate-spin text-[#0066FF]" />
+                                        <Loader2 size={32} className="animate-spin text-accent" />
                                     )}
                                     {formState === "success" && (
                                         <Check size={32} className="animate-in zoom-in spin-in duration-300" />
@@ -226,28 +224,37 @@ const FloatingInput = ({ label, type = "text", textarea = false }: { label: stri
                 <textarea
                     placeholder=" "
                     rows={2}
-                    className="peer w-full bg-transparent border-b border-white/20 py-2 text-xl outline-none text-white focus:border-[#0066FF] transition-colors resize-none"
+                    className="peer w-full bg-transparent border-b border-white/20 py-2 text-xl outline-none text-white focus:border-accent transition-colors resize-none"
                 />
             ) : (
                 <input
                     type={type}
                     placeholder=" "
-                    className="peer w-full bg-transparent border-b border-white/20 py-2 text-xl outline-none text-white focus:border-[#0066FF] transition-colors"
+                    className="peer w-full bg-transparent border-b border-white/20 py-2 text-xl outline-none text-white focus:border-accent transition-colors"
                 />
             )}
 
             <label className="absolute left-0 top-2 text-gray-500 text-lg transition-all duration-300 pointer-events-none
-                peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#0066FF]
+                peer-focus:-top-4 peer-focus:text-xs peer-focus:text-accent
                 peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-gray-400"
             >
                 {label}
             </label>
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#0066FF] transition-all duration-500 peer-focus:w-full" />
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-500 peer-focus:w-full" />
         </div>
     )
 }
 
-const MagneticContact = ({ text, type, prefix, icon: Icon, onClick, copied }: any) => {
+type MagneticContactProps = {
+    text: string;
+    type: string;
+    prefix?: string;
+    icon?: LucideIcon;
+    onClick: (text: string, type: string) => void;
+    copied: boolean;
+};
+
+const MagneticContact = ({ text, type, prefix, icon: Icon, onClick, copied }: MagneticContactProps) => {
     return (
         <div className="social-item group relative w-fit">
             <MagneticButton strength={0.4}>
@@ -255,10 +262,10 @@ const MagneticContact = ({ text, type, prefix, icon: Icon, onClick, copied }: an
                     className="flex items-center gap-4 cursor-pointer p-4 rounded-xl hover:bg-white/5 transition-all duration-300"
                     onClick={() => onClick(text, type)}
                 >
-                    {prefix && <div className="p-1 rounded bg-[#0066FF] text-[10px] font-bold">{prefix}</div>}
-                    {!prefix && <Icon size={24} className="text-[#0066FF]" />}
+                    {prefix && <div className="p-1 rounded bg-accent text-[10px] font-bold">{prefix}</div>}
+                    {!prefix && Icon && <Icon size={24} className="text-accent" />}
 
-                    <span className="text-xl md:text-3xl font-bold group-hover:text-[#0066FF] transition-colors">{text}</span>
+                    <span className="text-xl md:text-3xl font-bold group-hover:text-accent transition-colors">{text}</span>
 
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                         {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
@@ -269,7 +276,7 @@ const MagneticContact = ({ text, type, prefix, icon: Icon, onClick, copied }: an
     )
 }
 
-const GlitchSocial = ({ href, icon: Icon }: { href: string, icon: any }) => {
+const GlitchSocial = ({ href, icon: Icon }: { href: string; icon: LucideIcon }) => {
     return (
         <a
             href={href}
@@ -278,7 +285,7 @@ const GlitchSocial = ({ href, icon: Icon }: { href: string, icon: any }) => {
             className="social-item group relative w-16 h-16 flex items-center justify-center rounded-full bg-white/5 border border-white/10 overflow-hidden"
         >
             <div className="relative z-10 transition-transform duration-100 group-hover:translate-x-1 group-hover:-translate-y-1">
-                <Icon size={24} className="text-white group-hover:text-[#0066FF] transition-colors" />
+                <Icon size={24} className="text-white group-hover:text-accent transition-colors" />
             </div>
 
             {/* Glitch Layer 1 */}

@@ -1,18 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "@/lib/gsap";
 import Image from "next/image";
-import { ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
     const containerRef = useRef<HTMLElement>(null);
     const titleRef = useRef<HTMLDivElement>(null);
     const imageWrapperRef = useRef<HTMLDivElement>(null);
-    const bigTextRef = useRef<HTMLHeadingElement>(null);
+    const bigTextRef = useRef<HTMLParagraphElement>(null);
     const statsRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -103,13 +101,13 @@ export default function About() {
 
             {/* Background Big Text */}
             <div className="absolute top-1/4 left-0 w-full pointer-events-none select-none z-0 mix-blend-color-dodge opacity-20">
-                <h1 ref={bigTextRef} className="text-[25vw] font-black leading-none whitespace-nowrap text-transparent"
+                <p ref={bigTextRef} className="text-[25vw] font-black leading-none whitespace-nowrap text-transparent"
                     style={{
                         fontFamily: "'Space Grotesk', sans-serif",
                         WebkitTextStroke: "2px #333"
                     }}>
                     MOROCCO <span className="text-[2vw] font-mono tracking-widest align-middle text-white ml-8">32.5°N, 6.5°W</span>
-                </h1>
+                </p>
             </div>
 
             <div className="container mx-auto px-6 md:px-12 relative z-10">
@@ -121,14 +119,14 @@ export default function About() {
                         {/* Main Image Container */}
                         <div ref={imageWrapperRef} className="relative aspect-[3/4] w-full overflow-hidden shadow-2xl bg-gray-900 origin-bottom">
                             <Image
-                                src="/images/zh.png"
+                                src="/images/zh-hero.webp"
                                 alt="Zouhair Tabeg"
                                 fill
                                 className="about-img object-cover transition-all duration-700"
                                 priority
                             />
                             {/* Texture Overlay */}
-                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+                            <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay"></div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 
                             {/* Rotating Badge */}
@@ -142,7 +140,7 @@ export default function About() {
                                     </text>
                                 </svg>
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <ArrowUpRight className="w-6 h-6 text-[#0066FF]" />
+                                    <ArrowUpRight className="w-6 h-6 text-accent" />
                                 </div>
                             </div>
                         </div>
@@ -165,8 +163,8 @@ export default function About() {
                         <div ref={titleRef} className="mb-12 relative">
                             {/* Tag */}
                             <div className="flex items-center gap-3 mb-6">
-                                <span className="h-px w-10 bg-[#0066FF]"></span>
-                                <span className="text-xs font-mono uppercase tracking-[0.3em] text-[#0066FF]">About The Developer</span>
+                                <span className="h-px w-10 bg-accent"></span>
+                                <span className="text-xs font-mono uppercase tracking-[0.3em] text-accent">About The Developer</span>
                             </div>
 
                             {/* Brutalist/Serif Mixed Headline */}
@@ -188,16 +186,16 @@ export default function About() {
                             <div className="text-lg md:text-xl text-gray-400 font-light leading-relaxed border-l border-white/10 pl-6 space-y-6">
                                 <p>
                                     I am <strong className="text-white font-normal" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Tabeg Zouhair</strong>, a web and mobile developer based in <strong className="text-white font-normal">Morocco</strong>.
-                                    I don't just write code; I <span className="italic text-white font-serif">engineer immersive experiences</span>.
+                                    I don&apos;t just write code; I <span className="italic text-white font-serif">engineer immersive experiences</span>.
                                 </p>
                                 <p>
-                                    My passion lies in the intersection of <span className="text-white border-b border-[#0066FF]/30 pb-0.5">stunning design</span> and <span className="text-white border-b border-[#0066FF]/30 pb-0.5">robust engineering</span>.
-                                    Whether it's a high-performance web application or a fluid mobile experience, I obsess over every pixel and interaction.
+                                    My passion lies in the intersection of <span className="text-white border-b border-accent/30 pb-0.5">stunning design</span> and <span className="text-white border-b border-accent/30 pb-0.5">robust engineering</span>.
+                                    Whether it&apos;s a high-performance web application or a fluid mobile experience, I obsess over every pixel and interaction.
                                 </p>
                             </div>
 
                             {/* <div className="flex items-center gap-4 text-sm font-mono text-gray-500 pl-6">
-                                <MapPin size={16} className="text-[#0066FF]" />
+                                <MapPin size={16} className="text-accent" />
                                 <span>32.5574° N, 6.5186° W</span>
                                 <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
                                 <span>GMT+1</span>
@@ -241,7 +239,7 @@ function MagneticWrapper({ children }: { children: React.ReactNode }) {
     );
 }
 
-function DataCard({ label, value, sub, delay = 0 }: { label: string, value: string, sub: string, delay?: number }) {
+function DataCard({ label, value, sub }: { label: string, value: string, sub: string, delay?: number }) {
     const cardRef = useRef<HTMLDivElement>(null);
     const valueRef = useRef<HTMLHeadingElement>(null);
     // Parse number from string (e.g. "20+" -> 20)
@@ -273,14 +271,14 @@ function DataCard({ label, value, sub, delay = 0 }: { label: string, value: stri
 
     return (
         <MagneticWrapper>
-            <div ref={cardRef} className="bg-[#0f0f0f]/90 border border-white/10 p-6 w-48 shadow-2xl backdrop-blur-md group hover:border-[#0066FF] hover:bg-[#0f0f0f] transition-all duration-500 cursor-default relative overflow-hidden">
+            <div ref={cardRef} className="bg-[#0f0f0f]/90 border border-white/10 p-6 w-48 shadow-2xl backdrop-blur-md group hover:border-accent hover:bg-[#0f0f0f] transition-all duration-500 cursor-default relative overflow-hidden">
                 {/* Hover Glow */}
-                <div className="absolute top-0 right-0 w-20 h-20 bg-[#0066FF]/10 blur-xl rounded-full translate-x-10 -translate-y-10 group-hover:translate-x-0 group-hover:-translate-y-0 transition-transform duration-500" />
+                <div className="absolute top-0 right-0 w-20 h-20 bg-accent/10 blur-xl rounded-full translate-x-10 -translate-y-10 group-hover:translate-x-0 group-hover:-translate-y-0 transition-transform duration-500" />
 
-                <h3 ref={valueRef} className="text-4xl font-black text-white mb-2 group-hover:text-[#0066FF] transition-colors relative z-10" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                <h3 ref={valueRef} className="text-4xl font-black text-white mb-2 group-hover:text-accent transition-colors relative z-10" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                     {value}
                 </h3>
-                <div className="h-0.5 w-8 bg-white/20 mb-3 group-hover:w-full group-hover:bg-[#0066FF] transition-all duration-500" />
+                <div className="h-0.5 w-8 bg-white/20 mb-3 group-hover:w-full group-hover:bg-accent transition-all duration-500" />
                 <p className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-1 relative z-10">{label}</p>
                 <p className="text-[10px] text-gray-500 font-mono relative z-10 group-hover:text-gray-300 transition-colors">{sub}</p>
             </div>

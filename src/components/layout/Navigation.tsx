@@ -2,21 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { gsap } from "gsap";
+import { useLenis } from "@studio-freight/react-lenis";
+import { gsap } from "@/lib/gsap";
 import { Menu, X } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
-
-const LINKS = [
-    { name: "HOME", href: "#hero" },
-    { name: "ABOUT", href: "#about" },
-    { name: "SKILLS", href: "#skills" },
-    { name: "PROJECTS", href: "#projects" },
-    { name: "EXPERIENCE", href: "#experience" },
-    { name: "CONTACT", href: "#contact" },
-];
+import { NAV_LINKS } from "@/lib/navigation";
 
 export default function Navigation() {
     const [isOpen, setIsOpen] = useState(false);
+    const lenis = useLenis();
     const overlayRef = useRef<HTMLDivElement>(null);
     const linksContainerRef = useRef<HTMLDivElement>(null);
 
@@ -32,9 +26,6 @@ export default function Navigation() {
         const tl = gsap.timeline();
 
         if (isOpen) {
-            // Block scrolling
-            document.body.style.overflow = "hidden";
-
             // 1. Overlay Slide Down
             tl.to(overlay, {
                 y: "0%",
@@ -55,9 +46,6 @@ export default function Navigation() {
                 );
 
         } else {
-            // Restore scrolling
-            document.body.style.overflow = "auto";
-
             // Close Animation
             tl.to(overlay, {
                 y: "-100%",
@@ -67,6 +55,18 @@ export default function Navigation() {
         }
 
     }, [isOpen]);
+
+    // Pause Lenis while the fullscreen menu is open.
+    useEffect(() => {
+        if (!lenis) return;
+
+        if (isOpen) {
+            lenis.stop();
+            return;
+        }
+
+        lenis.start();
+    }, [isOpen, lenis]);
 
     return (
         <>
@@ -98,7 +98,7 @@ export default function Navigation() {
 
                 {/* Centered Navigation Links */}
                 <nav ref={linksContainerRef} className="relative z-10 flex flex-col items-center gap-6 md:gap-10">
-                    {LINKS.map((link) => (
+                    {NAV_LINKS.map((link) => (
                         <Link
                             key={link.name}
                             href={link.href}
