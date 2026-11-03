@@ -215,7 +215,7 @@ export default function Hero() {
             <div ref={bottomElementsRef} className="absolute bottom-10 flex w-full justify-between items-end px-6 md:px-12 z-20 pointer-events-none mix-blend-difference text-white/50 text-[10px] md:text-xs font-mono uppercase tracking-widest">
                 <div className="hidden md:flex flex-col gap-1">
                     <span>Creative Developer</span>
-                    <span>Based in France</span>
+                    <span>Based in Morocco</span>
                 </div>
 
                 <div className="flex flex-col items-center gap-3 flex-1 md:flex-none">
