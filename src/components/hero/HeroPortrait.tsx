@@ -1,15 +1,27 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
+import RevealFallback from "@/components/hero/RevealFallback";
+
+export type HeroRevealMode = "webgl" | "css" | "off";
 
 type HeroPortraitProps = {
     revealed: boolean;
     animate: boolean;
+    revealMode: HeroRevealMode;
 };
 
-export default function HeroPortrait({ revealed, animate }: HeroPortraitProps) {
+const BASE_PORTRAIT = "/images/hero/portrait-base.png";
+
+// The R3F canvas only ever mounts in the browser, after hydration.
+const HeroRevealCanvas = dynamic(() => import("@/components/hero/HeroRevealCanvas"), {
+    ssr: false,
+});
+
+export default function HeroPortrait({ revealed, animate, revealMode }: HeroPortraitProps) {
     const frameRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -36,25 +48,25 @@ export default function HeroPortrait({ revealed, animate }: HeroPortraitProps) {
     return (
         <div data-hero-portrait className="pointer-events-none absolute inset-0 z-10">
             {/* Mobile: the portrait becomes a ghosted full-bleed backdrop so the
-                stacked copy always stays legible. */}
+                stacked copy always stays legible. Image A only, no reveal. */}
             <div className="absolute inset-0 md:hidden">
                 <Image
-                    src="/images/zh-hero.webp"
-                    alt=""
+                    src={BASE_PORTRAIT}
+                    alt="Portrait of Zouhair Tabeg"
                     fill
                     priority
                     sizes="100vw"
-                    className="scale-105 object-cover object-[50%_16%] grayscale contrast-[1.1] brightness-[0.52] blur-[2px]"
+                    className="scale-110 object-cover object-[50%_16%] opacity-75 blur-[3px]"
                 />
-                <div aria-hidden="true" className="absolute inset-0 bg-accent/25 mix-blend-color" />
                 <div
                     aria-hidden="true"
-                    className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/65 to-ink"
+                    className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/70 to-ink"
                 />
                 <div aria-hidden="true" className="absolute inset-0 bg-noise opacity-[0.05] mix-blend-overlay" />
             </div>
 
-            {/* Desktop: the portrait interacts with the display name. */}
+            {/* Desktop: the portrait interacts with the display name, and the
+                cursor reveals image B inside an organic blob (WebGL or CSS). */}
             <div className="hidden h-full items-center justify-center pt-6 md:flex">
                 <div
                     className="hero-parallax will-change-transform"
@@ -67,19 +79,28 @@ export default function HeroPortrait({ revealed, animate }: HeroPortraitProps) {
                         <span aria-hidden="true" className="absolute -left-3 -top-3 h-5 w-5 border-l border-t border-accent/60" />
                         <span aria-hidden="true" className="absolute -bottom-3 -right-3 h-5 w-5 border-r border-b border-accent/60" />
 
-                        <div className="relative h-[58svh] w-[30vw] max-w-[400px] overflow-hidden rounded-t-[999px] rounded-b-2xl border border-white/10 bg-ink-soft">
+                        <div
+                            data-hero-card
+                            className="relative h-[58svh] w-[30vw] max-w-[400px] overflow-hidden rounded-t-[999px] rounded-b-2xl border border-white/10 bg-ink-soft"
+                        >
+                            {/* Accessible base image; the canvas above only paints the effect. */}
                             <Image
-                                src="/images/zh-hero.webp"
+                                src={BASE_PORTRAIT}
                                 alt="Portrait of Zouhair Tabeg"
                                 fill
                                 priority
                                 sizes="(max-width: 768px) 68vw, 30vw"
-                                className="object-cover object-[50%_18%] grayscale contrast-[1.05] brightness-[0.82]"
+                                className="object-cover object-center"
                             />
 
-                            {/* Accent duotone + fade into the page */}
-                            <div aria-hidden="true" className="absolute inset-0 bg-accent/25 mix-blend-color" />
-                            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
+                            {revealMode === "webgl" && <HeroRevealCanvas className="absolute inset-0" />}
+                            {revealMode === "css" && <RevealFallback />}
+
+                            {/* Fade into the page + film grain */}
+                            <div
+                                aria-hidden="true"
+                                className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent"
+                            />
                             <div aria-hidden="true" className="absolute inset-0 bg-noise opacity-[0.06] mix-blend-overlay" />
 
                             <span

@@ -10,10 +10,11 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useWebGLSupport } from "@/hooks/useWebGLSupport";
 import HeroIntro from "@/components/hero/HeroIntro";
 import HeroTitle from "@/components/hero/HeroTitle";
-import HeroPortrait from "@/components/hero/HeroPortrait";
+import HeroPortrait, { type HeroRevealMode } from "@/components/hero/HeroPortrait";
 import HeroCta from "@/components/hero/HeroCta";
 import HeroSignature from "@/components/hero/HeroSignature";
 import HeroMeta from "@/components/hero/HeroMeta";
+import TopoBackground from "@/components/hero/TopoBackground";
 
 const HeroBackground3D = dynamic(() => import("@/components/hero/HeroBackground3D"), {
     ssr: false,
@@ -33,6 +34,13 @@ export default function Hero() {
 
     const parallaxEnabled = finePointer && !reduced;
     const webglEnabled = finePointer && !reduced && webglSupported;
+    const revealMode: HeroRevealMode = reduced
+        ? "off"
+        : webglEnabled
+          ? "webgl"
+          : parallaxEnabled
+            ? "css"
+            : "off";
     const introDone = intro === "done" || reduced;
     const showIntro = !introDone;
     const isRevealed = revealed || reduced;
@@ -150,6 +158,7 @@ export default function Hero() {
                 onPointerLeave={resetParallax}
                 className="relative isolate min-h-svh w-full overflow-hidden bg-ink text-white"
             >
+                {/* ── Static background layers (z-0) ───────────────────────────── */}
                 <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
                     <div
                         className="absolute inset-0 opacity-[0.12]"
@@ -158,8 +167,9 @@ export default function Hero() {
                                 "radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--accent) 38%, transparent) 0%, transparent 62%)",
                         }}
                     />
+                    <TopoBackground active={parallaxEnabled} />
                     <div
-                        className="absolute inset-0 opacity-[0.045]"
+                        className="absolute inset-0 opacity-[0.035]"
                         style={{
                             backgroundImage:
                                 "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
@@ -175,7 +185,7 @@ export default function Hero() {
                     </div>
                 )}
 
-                <HeroPortrait revealed={isRevealed} animate={animate} />
+                <HeroPortrait revealed={isRevealed} animate={animate} revealMode={revealMode} />
 
                 <div className="relative z-20 flex min-h-svh flex-col items-center justify-center px-5 pt-20 pb-24">
                     <div data-hero-fade className="flex w-full flex-col items-center">
