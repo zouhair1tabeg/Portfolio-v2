@@ -191,7 +191,7 @@ export default function Projects() {
                             target="_blank"
                             className="project-card-inner w-full h-[60%] flex flex-col items-center justify-center bg-ink-soft/60 border border-white/10 rounded-xl hover:border-accent/50 hover:bg-ink-soft transition-all duration-300"
                         >
-                            <span className="text-xl md:text-2xl font-display font-bold text-white mb-2 group-hover:text-accent transition-colors">Voir plus</span>
+                            <span className="text-xl md:text-2xl font-display font-bold text-white mb-2 group-hover:text-accent transition-colors">See more</span>
                             <span className="text-sm text-white/50 uppercase tracking-widest group-hover:text-white transition-colors">GitHub Profile ↗</span>
                         </a>
                     </div>

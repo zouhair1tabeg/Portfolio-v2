@@ -8,27 +8,27 @@ import { Briefcase } from "lucide-react";
 const EXPERIENCE_DATA = [
     {
         year: "2025",
-        title: "Licence Professionnelle",
-        institution: "FST de Béni Mellal",
-        date: "En cours",
+        title: "Professional Bachelor's Degree",
+        institution: "FST Beni Mellal — Faculty of Sciences and Techniques",
+        date: "In progress",
         description: "Advanced studies in Software Engineering & Digital Transformation.",
         current: true,
         type: "Education"
     },
     {
         year: "2023",
-        title: "Technicien Spécialisé",
-        institution: "Dev Mobile (OFPPT)",
-        date: "2023 - 2025",
+        title: "Specialized Technician Diploma",
+        institution: "Mobile Development (OFPPT)",
+        date: "2023 – 2025",
         description: "Specialized training in mobile development (Flutter, Kotlin) and ecosystem.",
         current: false,
         type: "Education"
     },
     {
         year: "2022",
-        title: "Bac Sciences Physiques",
+        title: "Baccalaureate in Physical Sciences",
         institution: "High School",
-        date: "2022 - 2023",
+        date: "2022 – 2023",
         description: "Scientific baccalaureate with focus on Physics and Chemistry.",
         current: false,
         type: "Education"
@@ -282,10 +282,10 @@ function AeroCard({ item }: { item: ExperienceItem }) {
                 <h3 className="text-3xl font-bold text-white mb-2 font-display group-hover:text-accent transition-colors">
                     {item.title}
                 </h3>
-                <p className="text-xl text-gray-400 font-light mb-4 flex items-center gap-2">
+                <p className="text-xl text-gray-400 font-light mb-4 flex flex-wrap items-center gap-2">
                     {item.institution}
                     <span className="w-1 h-1 bg-gray-600 rounded-full" />
-                    <span className="text-white/60 text-sm font-mono">{item.date}</span>
+                    <span className="text-white/60 text-sm font-mono whitespace-nowrap">{item.date}</span>
                 </p>
                 <p className="text-gray-500 leading-relaxed text-sm max-w-sm">
                     {item.description}

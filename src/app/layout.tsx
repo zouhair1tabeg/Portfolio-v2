@@ -13,9 +13,25 @@ const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
+const SITE_TITLE = "Tabeg Zouhair | Web & Mobile Developer";
+const SITE_DESCRIPTION =
+    "Portfolio of Tabeg Zouhair, a web and mobile developer crafting fast, polished digital experiences.";
+
 export const metadata: Metadata = {
-    title: "Tabeg Zouhair | Web & Mobile Developer",
-    description: "Portfolio of Tabeg Zouhair, a web and mobile developer creating modern digital experiences.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    openGraph: {
+        title: SITE_TITLE,
+        description: SITE_DESCRIPTION,
+        locale: "en_US",
+        type: "website",
+        siteName: "Tabeg Zouhair",
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: SITE_TITLE,
+        description: SITE_DESCRIPTION,
+    },
 };
 
 export default function RootLayout({
@@ -39,7 +55,7 @@ export default function RootLayout({
                     href="#main-content"
                     className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-accent focus:px-5 focus:py-3 focus:text-xs focus:font-bold focus:uppercase focus:tracking-widest focus:text-ink"
                 >
-                    Aller au contenu
+                    Skip to content
                 </a>
 
                 <SmoothScroll>

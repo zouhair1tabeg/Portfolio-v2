@@ -2,11 +2,11 @@ export type SkillItem = { name: string; children?: readonly string[] };
 
 export type SkillCategory = {
   id: string;
-  index: string; // "01" à "08"
+  index: string; // "01" to "08"
   title: string;
   icon: "Smartphone" | "Globe" | "Server" | "ShoppingCart" | "Workflow" | "Terminal" | "Monitor" | "Layers";
-  variant: "tags" | "list"; // "list" = savoirs métier, pas des technologies
-  size: "lg" | "md" | "sm"; // poids visuel dans la grille
+  variant: "tags" | "list"; // "list" = domain expertise, not technologies
+  size: "lg" | "md" | "sm"; // visual weight in the grid
   items: readonly SkillItem[];
 };
 
