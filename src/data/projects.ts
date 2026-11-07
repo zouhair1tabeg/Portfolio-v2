@@ -26,6 +26,7 @@ export const PROJECTS: readonly Project[] = [
             "Local data persistence",
         ],
         stack: ["Flutter", "Spring Boot", "PostgreSQL", "Redis", "Keycloak", "OIDC / OAuth2"],
+        cover: "/images/projects/labcollect.webp",
         links: { repo: "https://github.com/zouhair1tabeg/LabCollect" },
     },
     {
@@ -40,6 +41,7 @@ export const PROJECTS: readonly Project[] = [
             "Full history and event logs",
         ],
         stack: ["React", "FastAPI", "MQTT", "ESP32", "Docker", "PostgreSQL"],
+        cover: "/images/projects/smartbell.webp",
         links: { repo: "https://github.com/zouhair1tabeg/Smart-Bell" },
     },
     {
@@ -70,6 +72,7 @@ export const PROJECTS: readonly Project[] = [
             "Saved game history",
         ],
         stack: ["Flutter", "Dart", "Clean Architecture", "ChangeNotifier", "SharedPreferences", "Unit Testing"],
+        cover: "/images/projects/rummy-score.webp",
         links: { repo: "https://github.com/zouhair1tabeg/Rummy-Score" },
     },
     {
