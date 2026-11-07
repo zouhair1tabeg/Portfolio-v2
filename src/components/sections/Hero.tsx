@@ -13,7 +13,6 @@ import HeroTitle from "@/components/hero/HeroTitle";
 import HeroPortrait, {
     type HeroRevealMode,
 } from "@/components/hero/HeroPortrait";
-import HeroCta from "@/components/hero/HeroCta";
 import HeroSignature from "@/components/hero/HeroSignature";
 import HeroMeta from "@/components/hero/HeroMeta";
 import TopoBackground from "@/components/hero/TopoBackground";
@@ -193,7 +192,7 @@ export default function Hero() {
                     </div>
                 )}
 
-                {/* z-10 name → z-20 portrait → z-25 scrim → z-30 copy/CTAs */}
+                {/* z-10 name → z-20 portrait → z-25 scrim → z-30 copy */}
                 <HeroPortrait
                     revealed={isRevealed}
                     animate={animate}
@@ -207,14 +206,13 @@ export default function Hero() {
                     className="pointer-events-none absolute inset-x-0 bottom-0 z-[25] h-[32%] bg-gradient-to-t from-ink via-ink/80 to-transparent"
                 />
 
-                <div className="relative flex min-h-svh flex-col items-center px-5 pt-24 pb-[9rem] lg:justify-center lg:pt-20 lg:pb-24">
+                <div className="relative flex min-h-svh flex-col items-center px-5 pt-24 pb-24 lg:justify-center lg:pt-20 lg:pb-20">
                     <HeroTitle
                         revealed={isRevealed}
                         animate={animate}
                         revealMode={revealMode}
                         nameHidden={nameVisible}
                     />
-                    <HeroCta className="max-lg:absolute max-lg:inset-x-0 max-lg:bottom-[5.5rem] max-lg:mt-0" />
                 </div>
 
                 <HeroSignature

@@ -282,7 +282,7 @@ export default function HeroTitle({
 
             <div
                 data-hero-fade
-                className="relative z-30 mt-5 flex w-full flex-col items-center md:mt-7 max-lg:absolute max-lg:inset-x-0 max-lg:bottom-[10.5rem] max-lg:mt-0"
+                className="relative z-30 mt-5 flex w-full flex-col items-center md:mt-7 max-lg:absolute max-lg:inset-x-0 max-lg:bottom-[6.5rem] max-lg:mt-0"
             >
                 <p
                     ref={roleRef}
