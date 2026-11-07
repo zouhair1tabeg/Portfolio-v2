@@ -35,6 +35,7 @@ export const PROJECTS: readonly Project[] = [
             "Local data persistence",
         ],
         stack: ["Flutter", "Spring Boot", "PostgreSQL", "Redis", "Keycloak", "OIDC / OAuth2"],
+        links: { repo: "https://github.com/zouhair1tabeg/LabCollect" },
         caseStudy: {
             context: "LabCollect is part of the digital transformation of quality control and food-safety processes under ONSSA standards. It digitizes and secures the entire on-site sampling process, replacing traditional paper forms that are vulnerable to errors and disputes.",
             solution: "The Flutter field app guides samplers step by step and enforces a double validation: geolocation (GPS) and biometrics. It also provides barcode scanning to identify sample bottles, multimedia evidence capture (compressed photos, speech-to-text dictation and digital signature) and local data persistence.",
@@ -66,6 +67,7 @@ export const PROJECTS: readonly Project[] = [
             "Full history and event logs",
         ],
         stack: ["React", "FastAPI", "MQTT", "ESP32", "Docker", "PostgreSQL"],
+        links: { repo: "https://github.com/zouhair1tabeg/Smart-Bell" },
         caseStudy: {
             context: "Bell management in schools often relies on rigid hardware timers that are hard to adjust and offer no central monitoring. SmartBell modernizes this process with a reliable, remotely controllable, connected IoT architecture.",
             solution: "A web interface to manage schedules, a FastAPI backend that publishes commands over MQTT, and an ESP32 firmware that rings the bell through a relay, with a hardware clock as safety net.",
@@ -112,6 +114,7 @@ export const PROJECTS: readonly Project[] = [
             "Saved game history",
         ],
         stack: ["Flutter", "Dart", "Clean Architecture", "ChangeNotifier", "SharedPreferences", "Unit Testing"],
+        links: { repo: "https://github.com/zouhair1tabeg/Rummy-Score" },
         caseStudy: {
             context: "Keeping scores by hand during card games is a headache. Rummy Score removes it and keeps the game flowing.",
             solution: "Built for a smooth experience among friends, the app rigorously applies the official Rummy rules, with automatic point calculation, elimination threshold management and saved game history.",
@@ -143,6 +146,7 @@ export const PROJECTS: readonly Project[] = [
         ],
         stack: ["Flutter", "Firebase", "HealthKit"],
         cover: "/images/projects/fitness.png",
+        links: { repo: "https://github.com/zouhair1tabeg/Fitness_Tracker" },
     },
     {
         slug: "bazzar",
@@ -158,6 +162,7 @@ export const PROJECTS: readonly Project[] = [
         ],
         stack: ["PHP", "MySQL", "JavaScript"],
         cover: "/images/projects/bazaar.png",
+        links: { repo: "https://github.com/zouhair1tabeg/PHP/tree/master/Bazar" },
     },
     {
         slug: "portfolio-v1",
@@ -173,6 +178,7 @@ export const PROJECTS: readonly Project[] = [
         ],
         stack: ["HTML", "CSS", "GSAP"],
         cover: "/images/projects/portfolio-v1.png",
+        links: { repo: "https://github.com/zouhair1tabeg/Zouhair-Portfolio" },
     },
 ] as const;
 
