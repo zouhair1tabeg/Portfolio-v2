@@ -3,14 +3,13 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { REVEAL_CONFIG } from "@/components/hero/reveal-config";
-
-const REVEAL_TEXTURE = "/images/hero/portrait-reveal.png";
+import { HERO_PORTRAIT } from "@/components/hero/hero-portrait-assets";
 
 /**
- * No-WebGL fallback for the cursor reveal. The base image is rendered by
- * `HeroPortrait`; this layer clips the second image with a CSS radial mask
- * whose centre is damped towards the pointer. All listeners are passive, so
- * the page keeps scrolling normally.
+ * No-WebGL fallback for the portrait reveal. Image A is rendered by
+ * `HeroPortrait`; this layer clips image B with a CSS radial mask whose centre
+ * is damped towards the pointer. All listeners are passive, so the page keeps
+ * scrolling normally.
  */
 export default function RevealFallback() {
     const hostRef = useRef<HTMLDivElement>(null);
@@ -31,6 +30,7 @@ export default function RevealFallback() {
         let inView = true;
 
         const onPointerMove = (event: PointerEvent) => {
+            if (event.pointerType === "touch") return;
             pointer.x = event.clientX;
             pointer.y = event.clientY;
             pointer.fresh = true;
@@ -92,8 +92,12 @@ export default function RevealFallback() {
             layer.style.opacity = state.reveal.toFixed(3);
         };
 
-        section.addEventListener("pointermove", onPointerMove, { passive: true });
-        section.addEventListener("pointerleave", onPointerLeave, { passive: true });
+        section.addEventListener("pointermove", onPointerMove, {
+            passive: true,
+        });
+        section.addEventListener("pointerleave", onPointerLeave, {
+            passive: true,
+        });
         frame = requestAnimationFrame(tick);
 
         return () => {
@@ -106,7 +110,11 @@ export default function RevealFallback() {
     }, []);
 
     return (
-        <div ref={hostRef} aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div
+            ref={hostRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+        >
             <div
                 ref={layerRef}
                 className="absolute inset-0 opacity-0 [mask-repeat:no-repeat] [mask-size:100%_100%] [-webkit-mask-repeat:no-repeat] [-webkit-mask-size:100%_100%]"
@@ -118,11 +126,11 @@ export default function RevealFallback() {
                 }}
             >
                 <Image
-                    src={REVEAL_TEXTURE}
+                    src={HERO_PORTRAIT.reveal}
                     alt=""
                     fill
                     loading="eager"
-                    sizes="(max-width: 1024px) 34vw, 400px"
+                    sizes="(max-width: 1024px) 80svh, 70svh"
                     className="object-cover object-center"
                 />
             </div>

@@ -3,22 +3,31 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import RevealPlane, { type RevealInput } from "@/components/hero/HeroRevealPlane";
+import { useHeroNameTextures } from "@/components/hero/useHeroNameTextures";
 
 type HeroRevealCanvasProps = {
-    /** Wrapper around the portrait card; the pointer is read from its section. */
+    /** Full-hero overlay host. */
     className?: string;
+    /** Enables the canvas name once the DOM name is ready to be hidden. */
+    nameVisible: boolean;
+    /** Called once the portrait texture and both name textures are ready. */
+    onReady?: () => void;
 };
 
 /**
- * Full-frame R3F canvas that sits on top of the base portrait. It is purely
- * decorative: the accessible `<Image>` stays underneath, and the canvas never
- * receives pointer events. The listener lives on the hero `<section>` so the
- * title and the CTAs stay interactive.
+ * Full-hero R3F overlay. It is purely decorative: the accessible portrait and
+ * heading stay in the DOM, and the canvas never receives pointer events. The
+ * listener lives on the hero `<section>`, so the title and CTAs stay usable.
  */
-export default function HeroRevealCanvas({ className }: HeroRevealCanvasProps) {
+export default function HeroRevealCanvas({
+    className,
+    nameVisible,
+    onReady,
+}: HeroRevealCanvasProps) {
     const hostRef = useRef<HTMLDivElement>(null);
     const input = useRef<RevealInput>({ x: 0.5, y: 0.5, inside: false });
     const [visible, setVisible] = useState(true);
+    const { name, portraitRect } = useHeroNameTextures(hostRef);
 
     useEffect(() => {
         const host = hostRef.current;
@@ -48,7 +57,7 @@ export default function HeroRevealCanvas({ className }: HeroRevealCanvasProps) {
         };
 
         const onPointerMove = (event: PointerEvent) => {
-            // Touch scrolls the page; the CPU fallback is not used on phones.
+            // Touch scrolls the page; the effect is pointer-only.
             if (event.pointerType === "touch") return;
 
             pending = { x: event.clientX, y: event.clientY };
@@ -83,12 +92,22 @@ export default function HeroRevealCanvas({ className }: HeroRevealCanvasProps) {
                 flat
                 dpr={[1, 1.5]}
                 frameloop={visible ? "always" : "never"}
-                gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+                gl={{
+                    antialias: false,
+                    alpha: true,
+                    powerPreference: "high-performance",
+                }}
                 camera={{ position: [0, 0, 1] }}
                 className="!pointer-events-none"
             >
                 <Suspense fallback={null}>
-                    <RevealPlane input={input} />
+                    <RevealPlane
+                        input={input}
+                        name={name}
+                        portraitRect={portraitRect}
+                        nameVisible={nameVisible}
+                        onReady={onReady}
+                    />
                 </Suspense>
             </Canvas>
         </div>

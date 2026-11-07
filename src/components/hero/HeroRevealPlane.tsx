@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { REVEAL_CONFIG } from "@/components/hero/reveal-config";
+import { HERO_PORTRAIT } from "@/components/hero/hero-portrait-assets";
+import type { HeroNameTextures } from "@/components/hero/useHeroNameTextures";
 import { revealFragmentShader } from "@/components/hero/shaders/reveal.frag";
 import { revealVertexShader } from "@/components/hero/shaders/reveal.vert";
 
 export type RevealInput = {
-    /** Cursor position inside the portrait, 0 – 1 (origin bottom-left). */
+    /** Cursor position inside the hero, 0 – 1 (origin bottom-left). */
     x: number;
     y: number;
     inside: boolean;
@@ -17,17 +19,39 @@ export type RevealInput = {
 
 type RevealPlaneProps = {
     input: React.RefObject<RevealInput>;
+    name: HeroNameTextures | null;
+    portraitRect: THREE.Vector4 | null;
+    /** Enables the canvas name once the DOM name can be swapped out. */
+    nameVisible: boolean;
+    onReady?: () => void;
 };
 
-const BASE_TEXTURE = "/images/hero/portrait-base.png";
-const REVEAL_TEXTURE = "/images/hero/portrait-reveal.png";
 const TRAIL_LENGTH = 5;
+const NAME_FADE_SPEED = 9;
 
-// Both textures must share the same dimensions and framing. To swap in the
-// real pair, replace the two PNGs only — see public/images/hero/README.md.
+// Placeholder for the name sampler until the DOM measurement is available.
+const EMPTY_TEXTURE = new THREE.DataTexture(
+    new Uint8Array([0, 0, 0, 0]),
+    1,
+    1,
+    THREE.RGBAFormat,
+);
+EMPTY_TEXTURE.needsUpdate = true;
 
-export default function RevealPlane({ input }: RevealPlaneProps) {
-    const [textureA, textureB] = useTexture([BASE_TEXTURE, REVEAL_TEXTURE]);
+function preparePortraitTexture(texture: THREE.Texture) {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 4;
+    texture.needsUpdate = true;
+}
+
+export default function RevealPlane({
+    input,
+    name,
+    portraitRect,
+    nameVisible,
+    onReady,
+}: RevealPlaneProps) {
+    const textureB = useTexture(HERO_PORTRAIT.reveal);
 
     const mouse = useRef(new THREE.Vector2(0.5, 0.5));
     const velocity = useRef(new THREE.Vector2());
@@ -39,11 +63,18 @@ export default function RevealPlane({ input }: RevealPlaneProps) {
     const idle = useRef(0);
     const reveal = useRef(0);
     const initialised = useRef(false);
+    const nameVisibleRef = useRef(nameVisible);
+    const onReadyRef = useRef(onReady);
+    const notified = useRef(false);
 
     const uniforms = useMemo(
         () => ({
-            uTexA: { value: textureA },
             uTexB: { value: textureB },
+            uNameFill: { value: EMPTY_TEXTURE as THREE.Texture },
+            uNameOutline: { value: EMPTY_TEXTURE as THREE.Texture },
+            uNameRect: { value: new THREE.Vector4(0, 0, 0.0001, 0.0001) },
+            uPortraitRect: { value: new THREE.Vector4(0, 0, 0.0001, 0.0001) },
+            uNameOpacity: { value: 0 },
             uMouse: { value: new THREE.Vector2(0.5, 0.5) },
             uVelocity: { value: new THREE.Vector2() },
             uTrail: {
@@ -53,7 +84,6 @@ export default function RevealPlane({ input }: RevealPlaneProps) {
                 ),
             },
             uResolution: { value: new THREE.Vector2(1, 1) },
-            uTexResolution: { value: new THREE.Vector2(1, 1) },
             uRadius: { value: REVEAL_CONFIG.radius },
             uTime: { value: 0 },
             uReveal: { value: 0 },
@@ -62,7 +92,7 @@ export default function RevealPlane({ input }: RevealPlaneProps) {
             uNoiseScale: { value: REVEAL_CONFIG.noiseScale },
             uEdgeSoftness: { value: REVEAL_CONFIG.edgeSoftness },
         }),
-        [textureA, textureB],
+        [textureB],
     );
 
     // `useFrame` mutates uniforms every frame; going through a ref keeps the
@@ -70,18 +100,36 @@ export default function RevealPlane({ input }: RevealPlaneProps) {
     const uniformsRef = useRef(uniforms);
 
     useEffect(() => {
-        for (const texture of [textureA, textureB]) {
-            texture.colorSpace = THREE.SRGBColorSpace;
-            texture.anisotropy = 4;
-            texture.needsUpdate = true;
-        }
+        preparePortraitTexture(textureB);
+    }, [textureB]);
 
-        const image = textureA.image as HTMLImageElement;
-        uniformsRef.current.uTexResolution.value.set(
-            image.naturalWidth || image.width,
-            image.naturalHeight || image.height,
-        );
-    }, [textureA, textureB]);
+    useLayoutEffect(() => {
+        nameVisibleRef.current = nameVisible;
+    }, [nameVisible]);
+
+    useLayoutEffect(() => {
+        onReadyRef.current = onReady;
+    }, [onReady]);
+
+    useLayoutEffect(() => {
+        if (!name) return;
+
+        const u = uniformsRef.current;
+        u.uNameFill.value = name.fill;
+        u.uNameOutline.value = name.outline;
+        u.uNameRect.value.copy(name.rect);
+    }, [name]);
+
+    useLayoutEffect(() => {
+        if (!portraitRect) return;
+        uniformsRef.current.uPortraitRect.value.copy(portraitRect);
+    }, [portraitRect]);
+
+    useEffect(() => {
+        if (!name || notified.current) return;
+        notified.current = true;
+        onReadyRef.current?.();
+    }, [name]);
 
     useFrame((state, delta) => {
         // Clamp long frames (tab switch) so the easing never jumps.
@@ -93,6 +141,11 @@ export default function RevealPlane({ input }: RevealPlaneProps) {
             state.size.width * state.viewport.dpr,
             state.size.height * state.viewport.dpr,
         );
+
+        const targetOpacity = nameVisibleRef.current ? 1 : 0;
+        u.uNameOpacity.value +=
+            (targetOpacity - u.uNameOpacity.value) *
+            (1 - Math.exp(-dt * NAME_FADE_SPEED));
 
         if (!target) return;
 
@@ -111,8 +164,12 @@ export default function RevealPlane({ input }: RevealPlaneProps) {
         mouse.current.x += (target.x - mouse.current.x) * follow;
         mouse.current.y += (target.y - mouse.current.y) * follow;
 
+        // Velocity is expressed in height units, exactly like the distance
+        // field, so the stretch feels the same whatever the hero aspect is.
+        const aspect =
+            state.size.height > 0 ? state.size.width / state.size.height : 1;
         instantVelocity.current.set(
-            (mouse.current.x - previousX) / Math.max(dt, 0.001),
+            ((mouse.current.x - previousX) * aspect) / Math.max(dt, 0.001),
             (mouse.current.y - previousY) / Math.max(dt, 0.001),
         );
         velocity.current.lerp(
@@ -121,8 +178,10 @@ export default function RevealPlane({ input }: RevealPlaneProps) {
         );
 
         const speed = velocity.current.length();
+        const portraitHeight = Math.max(u.uPortraitRect.value.w, 0.08);
         u.uRadius.value =
             REVEAL_CONFIG.radius *
+            portraitHeight *
             (1 + Math.min(speed * 0.25, 1) * REVEAL_CONFIG.radiusBoost);
 
         // Trail: each point chases the previous one, giving a liquid wake.
@@ -135,7 +194,7 @@ export default function RevealPlane({ input }: RevealPlaneProps) {
             u.uTrail.value[index].copy(point);
         }
 
-        // Fade out when the pointer stops or leaves the portrait.
+        // Fade out when the pointer stops or leaves the hero.
         const targetMoved = Math.hypot(
             target.x - lastTarget.current.x,
             target.y - lastTarget.current.y,
@@ -165,6 +224,7 @@ export default function RevealPlane({ input }: RevealPlaneProps) {
                 uniforms={uniforms}
                 depthTest={false}
                 depthWrite={false}
+                transparent
                 toneMapped={false}
             />
         </mesh>

@@ -167,21 +167,61 @@
   animation: marquee-half 42s linear infinite;
 }
 
-/* Outlined variant of the display name. */
-.hero-outline {
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.72);
-  transition: color 400ms ease;
+/*
+ * Two-layer display name for the no-WebGL fallback.
+ *
+ * `--name-reveal` (0 – 1), `--mx` / `--my` (px inside the name box) and the
+ * blob radii are driven from HeroTitle every frame. The filled layer punches a
+ * soft hole under the cursor; the stroke layer is clipped to the same blob, so
+ * the letters turn into an outline exactly like the shader version.
+ */
+.hero-name-fill {
+  -webkit-mask-image: radial-gradient(
+    ellipse var(--blob-w, 0px) var(--blob-h, 0px) at var(--mx, 50%) var(--my, 50%),
+    rgb(0 0 0 / calc(1 - var(--name-reveal, 0))) 0%,
+    rgb(0 0 0 / calc(1 - var(--name-reveal, 0))) 55%,
+    #000 100%
+  );
+  mask-image: radial-gradient(
+    ellipse var(--blob-w, 0px) var(--blob-h, 0px) at var(--mx, 50%) var(--my, 50%),
+    rgb(0 0 0 / calc(1 - var(--name-reveal, 0))) 0%,
+    rgb(0 0 0 / calc(1 - var(--name-reveal, 0))) 55%,
+    #000 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
 }
 
-.hero-outline:hover {
-  color: var(--accent);
-  -webkit-text-stroke-color: transparent;
+.hero-name-stroke-layer {
+  -webkit-mask-image: radial-gradient(
+    ellipse var(--blob-w, 0px) var(--blob-h, 0px) at var(--mx, 50%) var(--my, 50%),
+    #000 0%,
+    #000 55%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse var(--blob-w, 0px) var(--blob-h, 0px) at var(--mx, 50%) var(--my, 50%),
+    #000 0%,
+    #000 55%,
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  opacity: var(--name-reveal, 0);
+}
+
+.hero-name-stroke {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1.5px currentColor;
 }
 
 @media (min-width: 768px) {
-  .hero-outline {
-    -webkit-text-stroke-width: 2.5px;
+  .hero-name-stroke {
+    -webkit-text-stroke-width: 2px;
   }
 }
 

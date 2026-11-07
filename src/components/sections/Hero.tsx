@@ -10,15 +10,18 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useWebGLSupport } from "@/hooks/useWebGLSupport";
 import HeroIntro from "@/components/hero/HeroIntro";
 import HeroTitle from "@/components/hero/HeroTitle";
-import HeroPortrait, { type HeroRevealMode } from "@/components/hero/HeroPortrait";
+import HeroPortrait, {
+    type HeroRevealMode,
+} from "@/components/hero/HeroPortrait";
 import HeroCta from "@/components/hero/HeroCta";
 import HeroSignature from "@/components/hero/HeroSignature";
 import HeroMeta from "@/components/hero/HeroMeta";
 import TopoBackground from "@/components/hero/TopoBackground";
 
-const HeroBackground3D = dynamic(() => import("@/components/hero/HeroBackground3D"), {
-    ssr: false,
-});
+const HeroBackground3D = dynamic(
+    () => import("@/components/hero/HeroBackground3D"),
+    { ssr: false },
+);
 
 const INTRO_KEY = "zt:intro:v1";
 
@@ -27,6 +30,8 @@ export default function Hero() {
     const [intro, setIntro] = useState<"playing" | "done">("playing");
     const [revealed, setRevealed] = useState(false);
     const [animate, setAnimate] = useState(false);
+    const [nameReady, setNameReady] = useState(false);
+    const [nameSettled, setNameSettled] = useState(false);
     const lenis = useLenis();
     const reduced = usePrefersReducedMotion();
     const finePointer = useMediaQuery("(pointer: fine) and (min-width: 768px)");
@@ -107,6 +112,21 @@ export default function Hero() {
         return () => window.clearTimeout(timeout);
     }, [introDone]);
 
+    // A canvas can only replace the DOM name once its textures are live and
+    // the DOM intro has finished animating, otherwise the reveal would be cut.
+    useEffect(() => {
+        if (revealMode !== "webgl" || !introDone) return;
+
+        const delay = animate ? 1700 : 0;
+        const timeout = window.setTimeout(() => setNameSettled(true), delay);
+        return () => window.clearTimeout(timeout);
+    }, [revealMode, introDone, animate]);
+
+    const handleNameReady = useCallback(() => setNameReady(true), []);
+
+    const nameVisible =
+        revealMode === "webgl" && introDone && nameReady && nameSettled;
+
     // The hero steps back as About arrives.
     useEffect(() => {
         if (reduced) return;
@@ -119,34 +139,21 @@ export default function Hero() {
                 scrub: true,
             } as const;
 
-            gsap.to("[data-hero-fade]", { yPercent: -8, opacity: 0.1, ease: "none", scrollTrigger: trigger });
-            gsap.to("[data-hero-portrait]", { yPercent: -16, ease: "none", scrollTrigger: trigger });
+            gsap.to("[data-hero-fade]", {
+                yPercent: -8,
+                opacity: 0.1,
+                ease: "none",
+                scrollTrigger: trigger,
+            });
+            gsap.to("[data-hero-portrait]", {
+                yPercent: -16,
+                ease: "none",
+                scrollTrigger: trigger,
+            });
         }, sectionRef);
 
         return () => ctx.revert();
     }, [reduced]);
-
-    const handlePointerMove = useCallback(
-        (event: React.PointerEvent<HTMLElement>) => {
-            if (!parallaxEnabled) return;
-
-            const section = sectionRef.current;
-            if (!section) return;
-
-            const rect = section.getBoundingClientRect();
-            const x = (event.clientX - rect.left) / rect.width - 0.5;
-            const y = (event.clientY - rect.top) / rect.height - 0.5;
-
-            section.style.setProperty("--px", x.toFixed(3));
-            section.style.setProperty("--py", y.toFixed(3));
-        },
-        [parallaxEnabled],
-    );
-
-    const resetParallax = useCallback(() => {
-        sectionRef.current?.style.setProperty("--px", "0");
-        sectionRef.current?.style.setProperty("--py", "0");
-    }, []);
 
     return (
         <>
@@ -154,12 +161,13 @@ export default function Hero() {
                 ref={sectionRef}
                 id="hero"
                 aria-label="Introduction"
-                onPointerMove={handlePointerMove}
-                onPointerLeave={resetParallax}
                 className="relative isolate min-h-svh w-full overflow-hidden bg-ink text-white"
             >
                 {/* ── Static background layers (z-0) ───────────────────────────── */}
-                <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 z-0"
+                >
                     <div
                         className="absolute inset-0 opacity-[0.12]"
                         style={{
@@ -185,13 +193,28 @@ export default function Hero() {
                     </div>
                 )}
 
-                <HeroPortrait revealed={isRevealed} animate={animate} revealMode={revealMode} />
+                {/* z-10 name → z-20 portrait → z-25 scrim → z-30 copy/CTAs */}
+                <HeroPortrait
+                    revealed={isRevealed}
+                    animate={animate}
+                    revealMode={revealMode}
+                    nameVisible={nameVisible}
+                    onNameReady={handleNameReady}
+                />
 
-                <div className="relative z-20 flex min-h-svh flex-col items-center justify-center px-5 pt-20 pb-24">
-                    <div data-hero-fade className="flex w-full flex-col items-center">
-                        <HeroTitle revealed={isRevealed} animate={animate} />
-                        <HeroCta />
-                    </div>
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 z-[25] h-[32%] bg-gradient-to-t from-ink via-ink/80 to-transparent"
+                />
+
+                <div className="relative flex min-h-svh flex-col items-center px-5 pt-24 pb-[9rem] lg:justify-center lg:pt-20 lg:pb-24">
+                    <HeroTitle
+                        revealed={isRevealed}
+                        animate={animate}
+                        revealMode={revealMode}
+                        nameHidden={nameVisible}
+                    />
+                    <HeroCta className="max-lg:absolute max-lg:inset-x-0 max-lg:bottom-[5.5rem] max-lg:mt-0" />
                 </div>
 
                 <HeroSignature
