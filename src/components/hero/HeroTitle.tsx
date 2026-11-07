@@ -242,7 +242,7 @@ export default function HeroTitle({
                     <div className="relative font-hero text-hero font-black uppercase">
                         <div
                             ref={nameFillRef}
-                            className="hero-name-fill flex flex-col items-center py-[0.14em]"
+                            className="hero-name-fill flex flex-col items-center py-[0.06em]"
                         >
                             <span className="block overflow-hidden pb-[0.04em]">
                                 <span
@@ -263,7 +263,7 @@ export default function HeroTitle({
                         </div>
 
                         {revealMode === "css" && (
-                            <div className="hero-name-stroke-layer absolute inset-0 z-10 flex flex-col items-center py-[0.14em]">
+                            <div className="hero-name-stroke-layer absolute inset-0 z-10 flex flex-col items-center py-[0.06em]">
                                 <span className="block overflow-hidden pb-[0.04em]">
                                     <span className="hero-name-stroke block whitespace-nowrap text-white">
                                         Zouhair
