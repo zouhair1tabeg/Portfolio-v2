@@ -4,55 +4,48 @@ import { useRef, useState, useEffect } from "react";
 import { gsap } from "@/lib/gsap";
 import { Code2, Database, Layout, Smartphone, Terminal, Cpu } from "lucide-react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { ACCENT_FALLBACK } from "@/lib/accent";
 
 
 const TOOLBOX_CATEGORIES = [
     {
         id: "frontend",
         label: "Frontend",
-        icon: Layout, // Blue
-        color: ACCENT_FALLBACK,
+        icon: Layout,
         level: 95,
         skills: ["React.js", "Next.js", "TypeScript", "Tailwind CSS", "GSAP"]
     },
     {
         id: "core",
         label: "Core",
-        icon: Code2, // Purple
-        color: "#8B5CF6",
+        icon: Code2,
         level: 90,
         skills: ["JavaScript", "HTML5", "CSS3", "Python"]
     },
     {
         id: "backend",
         label: "Backend",
-        icon: Database, // Cyan
-        color: "#06B6D4",
+        icon: Database,
         level: 85,
         skills: ["Node.js", "PostgreSQL", "Firebase", "Docker"]
     },
     {
         id: "mobile",
         label: "Mobile",
-        icon: Smartphone, // Pink
-        color: "#EC4899",
+        icon: Smartphone,
         level: 80,
         skills: ["Flutter", "React Native", "Swift", "Dart"]
     },
     {
         id: "creative",
         label: "Creative",
-        icon: Cpu, // Orange
-        color: "#F97316",
+        icon: Cpu,
         level: 75,
         skills: ["Three.js", "WebGL", "Blender", "Generative Art"]
     },
     {
         id: "tools",
         label: "Tools",
-        icon: Terminal, // Green
-        color: "#10B981",
+        icon: Terminal,
         level: 92,
         skills: ["Git", "VS Code", "Figma", "Postman"]
     }
@@ -102,13 +95,33 @@ export default function Skills() {
     const titleText = "Digital Toolbox";
 
     return (
-        <section ref={containerRef} id="skills" className="min-h-screen relative flex flex-col justify-center py-32 bg-[#030303] text-white overflow-hidden perspective-900">
+        <section ref={containerRef} id="skills" className="min-h-screen relative flex flex-col justify-center py-32 bg-ink text-white overflow-hidden perspective-900">
+
+            {/* Atmospheric layers shared with the hero */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+                <div
+                    className="absolute inset-0 opacity-[0.12]"
+                    style={{
+                        background:
+                            "radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--accent) 38%, transparent) 0%, transparent 62%)",
+                    }}
+                />
+                <div
+                    className="absolute inset-0 opacity-[0.035]"
+                    style={{
+                        backgroundImage:
+                            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+                        backgroundSize: "72px 72px",
+                    }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" />
+            </div>
 
             {/* 1. Kinetic Background Marquee */}
-            <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 -rotate-6 z-0 pointer-events-none opacity-[0.03] select-none">
+            <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 -rotate-6 z-0 pointer-events-none opacity-[0.05] select-none">
                 <div className="whitespace-nowrap flex gap-10 animate-marquee">
                     {[...Array(4)].map((_, i) => (
-                        <span key={i} className="text-[20vw] font-black uppercase leading-none" style={{ WebkitTextStroke: "2px white", color: "transparent" }}>
+                        <span key={i} className="text-[20vw] font-black uppercase leading-none" style={{ WebkitTextStroke: "2px var(--accent)", color: "transparent" }}>
                             FULLSTACK CREATIVE DEVELOPER
                         </span>
                     ))}
@@ -121,7 +134,7 @@ export default function Skills() {
                 <div className="text-center mb-24">
                     <div className="inline-flex items-center gap-2 mb-4">
                         <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-                        <span className="text-xs font-mono uppercase tracking-[0.4em] text-gray-400">Capabilities</span>
+                        <span className="text-xs font-mono uppercase tracking-[0.4em] text-white/50">Capabilities</span>
                     </div>
                     <h2 ref={titleRef} className="text-6xl md:text-8xl font-black tracking-tighter uppercase overflow-hidden" aria-label={titleText} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                         {titleText.split("").map((char, i) => (
@@ -188,7 +201,7 @@ function TiltCard({ category }: { category: ToolboxCategory }) {
             onMouseLeave={handleMouseLeave}
         >
             {/* Card Container */}
-            <div className="relative h-full bg-[#0A0A0A]/90 border border-white/5 rounded-3xl p-8 overflow-hidden backdrop-blur-md transition-colors duration-500 group-hover:border-white/20 group-hover:bg-[#0A0A0A]">
+            <div className="relative h-full bg-ink-soft/90 border border-white/10 rounded-3xl p-8 overflow-hidden backdrop-blur-md transition-colors duration-500 group-hover:border-accent/40 group-hover:bg-ink-soft">
 
                 {/* 4. Connectivity Lines Background (SVG) */}
                 <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
@@ -199,7 +212,7 @@ function TiltCard({ category }: { category: ToolboxCategory }) {
                         <rect width="100%" height="100%" fill={`url(#grid-${category.id})`} />
                         <motion.path
                             d="M 0 40 Q 150 40 300 200"
-                            stroke={category.color}
+                            stroke="var(--accent)"
                             strokeWidth="1.5"
                             fill="none"
                             initial={{ pathLength: 0, opacity: 0 }}
@@ -210,16 +223,6 @@ function TiltCard({ category }: { category: ToolboxCategory }) {
                 </div>
 
                 {/* 5. Spotlight Border Effect */}
-                <div
-                    className="absolute inset-0 pointer-events-none rounded-3xl z-50"
-                    style={{
-                        background: `radial-gradient(400px circle at ${x.get() + 300}px ${y.get() + 200}px, rgba(0, 102, 255, 0.4), transparent 40%)`,
-                        // We use state/motion value for coordinates. Since 'x' and 'y' are centered offsets in TiltCard,
-                        // we need to map them back to strict mouse coordinates relative to card for the border gradient.
-                        // Actually, plain CSS mask or a dedicated new mouse listener using local coords is better for "border follow".
-                    }}
-                />
-                {/* Better Spotlight Implementation: */}
                 <SpotlightBorder />
 
                 {/* Content */}
@@ -227,8 +230,8 @@ function TiltCard({ category }: { category: ToolboxCategory }) {
 
                     {/* Header */}
                     <div className="flex items-center justify-between">
-                        <div className="p-3.5 rounded-2xl bg-[#0F0F0F] border border-white/5 shadow-2xl" style={{ boxShadow: `0 8px 30px -10px ${category.color}20` }}>
-                            <category.icon size={26} style={{ color: category.color }} />
+                        <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 shadow-2xl" style={{ boxShadow: `0 8px 30px -10px color-mix(in srgb, var(--accent) 14%, transparent)` }}>
+                            <category.icon size={26} style={{ color: "var(--accent)" }} />
                         </div>
                         <div className="text-right">
                             <h3 className="text-xl font-bold uppercase tracking-tight text-white/90" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
@@ -238,7 +241,7 @@ function TiltCard({ category }: { category: ToolboxCategory }) {
                             <div className="h-0.5 bg-white/5 rounded-full mt-3 w-20 ml-auto overflow-hidden">
                                 <motion.div
                                     className="h-full rounded-full"
-                                    style={{ backgroundColor: category.color }}
+                                    style={{ backgroundColor: "var(--accent)" }}
                                     initial={{ width: 0 }}
                                     animate={{ width: hover ? `${category.level}%` : "15%" }}
                                     transition={{ duration: 1.5, ease: "circOut" }}
@@ -257,7 +260,7 @@ function TiltCard({ category }: { category: ToolboxCategory }) {
                         }}
                     >
                         {category.skills.map((skill: string, idx: number) => (
-                            <MagneticChip key={idx} text={skill} color={category.color} />
+                            <MagneticChip key={idx} text={skill} />
                         ))}
                     </motion.div>
 
@@ -268,7 +271,7 @@ function TiltCard({ category }: { category: ToolboxCategory }) {
 }
 
 // Magnetic Chip Component
-function MagneticChip({ text, color }: { text: string, color: string }) {
+function MagneticChip({ text }: { text: string }) {
     const ref = useRef<HTMLDivElement>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -296,22 +299,22 @@ function MagneticChip({ text, color }: { text: string, color: string }) {
                 hidden: { opacity: 0, y: 10 },
                 visible: { opacity: 1, y: 0 }
             }}
-            className="group/chip relative overflow-hidden px-3 py-1.5 bg-[#141414] rounded-md border border-white/5 cursor-pointer backdrop-blur-sm"
+            className="group/chip relative overflow-hidden px-3 py-1.5 bg-white/[0.04] rounded-md border border-white/10 cursor-pointer backdrop-blur-sm"
         >
-            <span className="relative z-10 text-[11px] font-semibold uppercase tracking-wider text-gray-400 group-hover/chip:text-white transition-colors">
+            <span className="relative z-10 text-[11px] font-semibold uppercase tracking-wider text-white/55 group-hover/chip:text-white transition-colors">
                 {text}
             </span>
 
             {/* Hover Fill Effect */}
             <div
-                className="absolute inset-0 opacity-0 group-hover/chip:opacity-20 transition-opacity duration-300"
-                style={{ backgroundColor: color }}
+                className="absolute inset-0 opacity-0 group-hover/chip:opacity-[0.14] transition-opacity duration-300"
+                style={{ backgroundColor: "var(--accent)" }}
             />
 
             {/* Bottom Highlight Line */}
             <div
                 className="absolute bottom-0 left-0 h-[1px] w-full origin-left scale-x-0 group-hover/chip:scale-x-100 transition-transform duration-300"
-                style={{ backgroundColor: color }}
+                style={{ backgroundColor: "var(--accent)" }}
             />
         </motion.div>
     );
@@ -341,7 +344,7 @@ function SpotlightBorder() {
                 className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-300"
                 style={{
                     opacity,
-                    background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(0, 102, 255, 0.15), transparent 40%)`
+                    background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, color-mix(in srgb, var(--accent) 16%, transparent), transparent 40%)`
                 }}
             />
             {/* Border glow specific */}
@@ -349,7 +352,7 @@ function SpotlightBorder() {
                 className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-300"
                 style={{
                     opacity,
-                    background: `radial-gradient(300px circle at ${position.x}px ${position.y}px, rgba(0, 102, 255, 0.6), transparent 40%)`,
+                    background: `radial-gradient(300px circle at ${position.x}px ${position.y}px, color-mix(in srgb, var(--accent) 55%, transparent), transparent 40%)`,
                     maskImage: "linear-gradient(black, black), linear-gradient(black, black)",
                     maskComposite: "exclude",
                     WebkitMaskComposite: "xor",

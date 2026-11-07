@@ -13,7 +13,6 @@ const projects = [
         tags: ["PHP", "MySQL", "JavaScript"],
         year: "2024",
         link: "https://github.com/zouhair1tabeg",
-        color: "#4F46E5", // Indigo
         image: "/images/projects/bazaar.png"
     },
     {
@@ -23,7 +22,6 @@ const projects = [
         tags: ["Flutter", "Firebase", "HealthKit"],
         year: "2023",
         link: "https://github.com/zouhair1tabeg",
-        color: "#10B981", // Emerald
         image: "/images/projects/fitness.png"
     },
     {
@@ -33,7 +31,6 @@ const projects = [
         tags: ["Swift", "SwiftUI", "CloudKit"],
         year: "2025",
         link: "https://github.com/zouhair1tabeg/Focus-Flow",
-        color: "#8B5CF6", // Violet
         image: "/images/projects/focusflow.png"
     },
     {
@@ -43,7 +40,6 @@ const projects = [
         tags: ["HTML", "CSS", "GSAP"],
         year: "2023",
         link: "https://github.com/zouhair1tabeg",
-        color: "#EF4444", // Red
         image: "/images/projects/portfolio-v1.png"
     },
 ];
@@ -100,12 +96,29 @@ export default function Projects() {
         <section
             ref={containerRef}
             id="projects"
-            className="relative min-h-screen bg-zinc-950 overflow-hidden text-white"
+            className="relative isolate min-h-screen bg-ink overflow-hidden text-white"
         >
-            {/* Dynamic Background Gradient Blob - can animate color based on active slide */}
-            <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none mix-blend-screen" />
+            {/* Atmospheric layers shared with the hero */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+                <div
+                    className="absolute inset-0 opacity-[0.12]"
+                    style={{
+                        background:
+                            "radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--accent) 38%, transparent) 0%, transparent 62%)",
+                    }}
+                />
+                <div
+                    className="absolute inset-0 opacity-[0.035]"
+                    style={{
+                        backgroundImage:
+                            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+                        backgroundSize: "72px 72px",
+                    }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" />
+            </div>
 
-            <div className="absolute top-12 left-6 md:left-12 z-10 mix-blend-difference">
+            <div className="absolute top-12 left-6 md:left-12 z-10">
                 <h4 className="text-sm font-medium uppercase tracking-[0.2em] text-white/50 mb-2">Selected Works</h4>
                 <h2 className="text-4xl md:text-5xl font-bold font-display">Featured Projects</h2>
             </div>
@@ -118,28 +131,28 @@ export default function Projects() {
                             className="group relative w-[80vw] md:w-[600px] h-full flex-shrink-0 perspective cursor-pointer"
                         >
                             <div
-                                className="project-card-inner w-full h-full bg-zinc-900 border border-white/10 rounded-xl overflow-hidden relative shadow-2xl transition-all duration-500"
+                                className="project-card-inner w-full h-full bg-ink-soft border border-white/10 rounded-xl overflow-hidden relative shadow-2xl transition-all duration-500 group-hover:border-accent/40"
                                 data-cursor="carousel" // Trigger custom cursor arrow
                             >
                                 {/* Card Content */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10 flex flex-col justify-end p-8 md:p-12 pointer-events-none">
+                                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent z-10 flex flex-col justify-end p-8 md:p-12 pointer-events-none">
                                     <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                                         <div className="flex justify-between items-end mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                                             <span className="text-xs uppercase tracking-widest text-white/60">{project.year}</span>
-                                            <a href={project.link} target="_blank" className="text-xs uppercase tracking-widest border-b border-white hover:text-blue-400 hover:border-blue-400 transition-colors pointer-events-auto">Details ↗</a>
+                                            <a href={project.link} target="_blank" className="text-xs uppercase tracking-widest border-b border-white hover:text-accent hover:border-accent transition-colors pointer-events-auto">Details ↗</a>
                                         </div>
 
                                         <h3 className="text-4xl md:text-5xl font-bold mb-3 font-display relative inline-block">
                                             {project.title}
                                             {/* Glitch Overlay Text */}
                                             <span className="absolute top-0 left-0 -ml-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch text-accent mix-blend-screen" aria-hidden="true">{project.title}</span>
-                                            <span className="absolute top-0 left-0 ml-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2 text-[#FF0000] mix-blend-screen" aria-hidden="true">{project.title}</span>
+                                            <span className="absolute top-0 left-0 ml-[2px] opacity-0 group-hover:opacity-100 group-hover:animate-glitch-2 text-white/80 mix-blend-screen" aria-hidden="true">{project.title}</span>
                                         </h3>
-                                        <p className="text-lg text-gray-300 font-light mb-6 line-clamp-2 md:line-clamp-none opacity-80 group-hover:opacity-100 transition-opacity">{project.description}</p>
+                                        <p className="text-lg text-white/70 font-light mb-6 line-clamp-2 md:line-clamp-none opacity-80 group-hover:opacity-100 transition-opacity">{project.description}</p>
 
                                         <div className="flex flex-wrap gap-2">
                                             {project.tags.map((tag, t) => (
-                                                <span key={t} className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs uppercase tracking-wider text-white/80 border border-white/5">
+                                                <span key={t} className="px-3 py-1 bg-white/[0.06] backdrop-blur-sm rounded-full text-xs uppercase tracking-wider text-white/70 border border-white/10">
                                                     {tag}
                                                 </span>
                                             ))}
@@ -159,7 +172,7 @@ export default function Projects() {
                                     </div>
 
                                     {/* Stronger Gradient for Readability */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90 pointer-events-none" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/60 to-transparent opacity-90 pointer-events-none" />
 
                                 </div>
 
@@ -176,10 +189,10 @@ export default function Projects() {
                         <a
                             href="https://github.com/zouhair1tabeg"
                             target="_blank"
-                            className="project-card-inner w-full h-[60%] flex flex-col items-center justify-center bg-zinc-900/50 border border-white/10 rounded-xl hover:border-blue-500/50 hover:bg-zinc-900 transition-all duration-300"
+                            className="project-card-inner w-full h-[60%] flex flex-col items-center justify-center bg-ink-soft/60 border border-white/10 rounded-xl hover:border-accent/50 hover:bg-ink-soft transition-all duration-300"
                         >
-                            <span className="text-xl md:text-2xl font-display font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">Voir plus</span>
-                            <span className="text-sm text-gray-400 uppercase tracking-widest group-hover:text-white transition-colors">GitHub Profile ↗</span>
+                            <span className="text-xl md:text-2xl font-display font-bold text-white mb-2 group-hover:text-accent transition-colors">Voir plus</span>
+                            <span className="text-sm text-white/50 uppercase tracking-widest group-hover:text-white transition-colors">GitHub Profile ↗</span>
                         </a>
                     </div>
                 </div>
