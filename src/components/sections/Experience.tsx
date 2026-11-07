@@ -10,7 +10,7 @@ const EXPERIENCE_DATA = [
         year: "2025",
         title: "Professional Bachelor's Degree",
         institution: "FST Beni Mellal — Faculty of Sciences and Techniques",
-        date: "In progress",
+        date: "2025 – 2026",
         description: "Advanced studies in Software Engineering & Digital Transformation.",
         current: true,
         type: "Education"
