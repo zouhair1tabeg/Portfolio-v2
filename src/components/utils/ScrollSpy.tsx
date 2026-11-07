@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const SECTIONS = ["hero", "about", "skills", "projects", "experience", "contact"];
+const SECTIONS = ["hero", "about", "skills", "services", "projects", "experience", "contact"];
 
 export default function ScrollSpy() {
     useEffect(() => {
