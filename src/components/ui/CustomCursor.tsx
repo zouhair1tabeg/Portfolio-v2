@@ -9,8 +9,9 @@ export default function CustomCursor() {
     const cursorRef = useRef<HTMLDivElement>(null);
     const ringRef = useRef<HTMLDivElement>(null);
     const arrowRef = useRef<HTMLDivElement>(null);
+    const labelRef = useRef<HTMLSpanElement>(null);
 
-    const [state, setState] = useState<"default" | "pointer" | "carousel">("default");
+    const [state, setState] = useState<"default" | "pointer" | "carousel" | "view">("default");
 
     useEffect(() => {
         const cursor = cursorRef.current;
@@ -37,7 +38,11 @@ export default function CustomCursor() {
         const handleMouseOver = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
 
-            if (target.closest("[data-cursor='carousel']")) {
+            if (target.closest("[data-cursor='pointer']")) {
+                setState("pointer");
+            } else if (target.closest("[data-cursor='view']")) {
+                setState("view");
+            } else if (target.closest("[data-cursor='carousel']")) {
                 setState("carousel");
             } else if (target.tagName === "A" || target.tagName === "BUTTON" || target.closest("a") || target.closest("button") || target.closest(".cursor-pointer")) {
                 setState("pointer");
@@ -59,7 +64,8 @@ export default function CustomCursor() {
         const ring = ringRef.current;
         const cursor = cursorRef.current;
         const arrow = arrowRef.current;
-        if (!ring || !cursor || !arrow) return;
+        const label = labelRef.current;
+        if (!ring || !cursor || !arrow || !label) return;
 
         const accent = getAccent();
 
@@ -68,16 +74,25 @@ export default function CustomCursor() {
             gsap.to(ring, { scale: 1.5, opacity: 0.5, backgroundColor: accent, borderColor: "transparent", duration: 0.3 });
             gsap.to(cursor, { scale: 0, duration: 0.3 }); // Hide dot
             gsap.to(arrow, { scale: 0, opacity: 0 });
+            gsap.to(label, { scale: 0, opacity: 0, duration: 0.15 });
+        } else if (state === "view") {
+            // Clickable project card: big ring with the "View" hint.
+            gsap.to(ring, { scale: 2.4, backgroundColor: "#ffffff", borderColor: "transparent", opacity: 1, duration: 0.3 });
+            gsap.to(cursor, { scale: 0, duration: 0.2 });
+            gsap.to(arrow, { scale: 0, opacity: 0, duration: 0.15 });
+            gsap.to(label, { scale: 1, opacity: 1, duration: 0.2 });
         } else if (state === "carousel") {
             // Carousel: Show Arrow
             gsap.to(ring, { scale: 2, backgroundColor: "#ffffff", borderColor: "transparent", opacity: 1, duration: 0.3 });
             gsap.to(cursor, { scale: 0 });
             gsap.to(arrow, { scale: 1, opacity: 1, duration: 0.3 });
+            gsap.to(label, { scale: 0, opacity: 0, duration: 0.15 });
         } else {
             // Default: Small Dot + Ring
             gsap.to(ring, { scale: 1, opacity: 0.5, backgroundColor: "transparent", borderColor: "#ffffff", duration: 0.3 });
             gsap.to(cursor, { scale: 1, backgroundColor: accent, duration: 0.3 });
             gsap.to(arrow, { scale: 0, opacity: 0 });
+            gsap.to(label, { scale: 0, opacity: 0, duration: 0.15 });
         }
     }, [state]);
 
@@ -98,6 +113,14 @@ export default function CustomCursor() {
                 <div ref={arrowRef} className="opacity-0 scale-0">
                     <ArrowUpRight className="text-black w-5 h-5" />
                 </div>
+
+                {/* "View" label for clickable project cards */}
+                <span
+                    ref={labelRef}
+                    className="font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-black opacity-0 scale-0 select-none"
+                >
+                    View
+                </span>
             </div>
         </div>
     );

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLenis } from "@studio-freight/react-lenis";
 import { gsap } from "@/lib/gsap";
 import { Menu, X } from "lucide-react";
@@ -11,6 +12,8 @@ import { NAV_LINKS } from "@/lib/navigation";
 export default function Navigation() {
     const [isOpen, setIsOpen] = useState(false);
     const lenis = useLenis();
+    const pathname = usePathname();
+    const isHome = pathname === "/";
     const overlayRef = useRef<HTMLDivElement>(null);
     const linksContainerRef = useRef<HTMLDivElement>(null);
 
@@ -101,7 +104,7 @@ export default function Navigation() {
                     {NAV_LINKS.map((link) => (
                         <Link
                             key={link.name}
-                            href={link.href}
+                            href={isHome ? link.href : `/${link.href}`}
                             onClick={() => setIsOpen(false)}
                             className="group relative"
                         >
