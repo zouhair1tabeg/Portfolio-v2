@@ -20,4 +20,14 @@ export const CERTIFICATIONS: readonly Certification[] = [
         verifyUrl: "https://verify.certiport.com",
         image: "/images/certifications/it-specialist-java.webp",
     },
+    {
+        id: "it-specialist-software-development",
+        title: "IT Specialist — Software Development",
+        issuer: "Certiport, a Pearson VUE business",
+        awardedOn: "2026-06-20",
+        expiresOn: "2031-06-20",
+        credentialId: "naTv-uT6S",
+        verifyUrl: "https://verify.certiport.com",
+        image: "/images/certifications/it-specialist-software-development.webp",
+    },
 ] as const;
