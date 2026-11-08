@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Montserrat, Space_Grotesk, Playfair_Display } from "next/font/google";
+import {
+    Inter,
+    Montserrat,
+    Noto_Sans_Arabic,
+    Space_Grotesk,
+    Playfair_Display,
+} from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import Navigation from "@/components/layout/Navigation";
@@ -12,6 +18,11 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
+const notoSansArabic = Noto_Sans_Arabic({
+    subsets: ["arabic"],
+    variable: "--font-noto-arabic",
+    display: "swap",
+});
 
 const SITE_TITLE = "Tabeg Zouhair | Web & Mobile Developer";
 const SITE_DESCRIPTION =
@@ -42,7 +53,7 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={`${inter.variable} ${montserrat.variable} ${spaceGrotesk.variable} ${playfair.variable} bg-black text-white antialiased font-sans cursor-none`}
+                className={`${inter.variable} ${montserrat.variable} ${spaceGrotesk.variable} ${playfair.variable} ${notoSansArabic.variable} bg-black text-white antialiased font-sans cursor-none`}
             >
                 {/* Hides the intro for returning visitors before the first paint. */}
                 <script

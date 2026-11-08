@@ -27,6 +27,7 @@ export default function ProjectCard({
         <article
             onPointerMove={handlePointerMove}
             data-cursor={clickable ? "view" : undefined}
+            data-project-slug={project.slug}
             style={{ "--mx": "50%", "--my": "50%" } as CSSProperties}
             className="project-card group relative isolate flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-ink-soft/90 transition-[border-color,background-color] duration-500 hover:border-accent/40 hover:bg-ink-soft"
         >
@@ -56,7 +57,16 @@ export default function ProjectCard({
 
             <div className="flex flex-1 flex-col p-5 md:p-6">
                 <h3 className="font-hero text-xl font-bold tracking-tight text-white md:text-2xl">
-                    {project.title}
+                    {project.title}{" "}
+                    {project.nativeTitle ? (
+                        <span
+                            lang="ar"
+                            dir="rtl"
+                            className="ms-2 inline-block align-middle font-arabic text-[0.8em] font-medium text-white/65"
+                        >
+                            {project.nativeTitle}
+                        </span>
+                    ) : null}
                 </h3>
 
                 <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-white/60">

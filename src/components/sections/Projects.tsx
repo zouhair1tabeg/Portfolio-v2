@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { PROJECTS } from "@/data/projects";
@@ -8,6 +9,9 @@ import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectFilters, {
     type ProjectFilter,
 } from "@/components/projects/ProjectFilters";
+
+const FEATURED_PROJECTS = PROJECTS.filter((project) => project.featured);
+const HIDDEN_COUNT = PROJECTS.length - FEATURED_PROJECTS.length;
 
 const COUNTS: Record<ProjectFilter, number> = {
     All: PROJECTS.length,
@@ -20,12 +24,16 @@ export default function Projects() {
     const sectionRef = useRef<HTMLElement>(null);
     const gridRef = useRef<HTMLDivElement>(null);
     const previousFilter = useRef<ProjectFilter>("All");
+    const previousSlugs = useRef<Set<string> | null>(null);
     const [filter, setFilter] = useState<ProjectFilter>("All");
+    const [showAll, setShowAll] = useState(false);
     const reduced = usePrefersReducedMotion();
 
     const visible =
         filter === "All"
-            ? PROJECTS
+            ? showAll
+                ? PROJECTS
+                : FEATURED_PROJECTS
             : PROJECTS.filter((project) => project.category.includes(filter));
     const projectLabel = `${String(visible.length).padStart(2, "0")} ${
         visible.length === 1 ? "project" : "projects"
@@ -53,28 +61,45 @@ export default function Projects() {
         return () => ctx.revert();
     }, [reduced]);
 
-    // Filter transition: fade + translateY, then recompute pinned positions.
+    // Filter / "show all" transition: fade only the cards that just appeared.
     useEffect(() => {
-        if (previousFilter.current === filter) return;
-        previousFilter.current = filter;
+        const nodes = Array.from(
+            gridRef.current?.querySelectorAll<HTMLElement>(".project-card") ?? [],
+        );
+        const currentSlugs = new Set(
+            nodes.map((node) => node.dataset.projectSlug ?? ""),
+        );
+        const previous = previousSlugs.current;
 
-        if (!reduced) {
-            gsap.fromTo(
-                ".project-card",
-                { y: 12, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.35,
-                    stagger: 0.05,
-                    ease: "power2.out",
-                    overwrite: true,
-                },
-            );
+        if (previous) {
+            const filterChanged = previousFilter.current !== filter;
+            const targets = filterChanged
+                ? nodes
+                : nodes.filter(
+                      (node) => !previous.has(node.dataset.projectSlug ?? ""),
+                  );
+
+            if (!reduced && targets.length) {
+                gsap.fromTo(
+                    targets,
+                    { y: 12, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.35,
+                        stagger: 0.05,
+                        ease: "power2.out",
+                        overwrite: true,
+                    },
+                );
+            }
+
+            ScrollTrigger.refresh();
         }
 
-        ScrollTrigger.refresh();
-    }, [filter, reduced]);
+        previousSlugs.current = currentSlugs;
+        previousFilter.current = filter;
+    }, [filter, showAll, reduced]);
 
     return (
         <section
@@ -138,6 +163,7 @@ export default function Projects() {
 
                 <div
                     ref={gridRef}
+                    id="projects-grid"
                     className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 2xl:grid-cols-3"
                 >
                     {visible.map((project, index) => (
@@ -148,6 +174,29 @@ export default function Projects() {
                         />
                     ))}
                 </div>
+
+                {filter === "All" && HIDDEN_COUNT > 0 ? (
+                    <div className="mt-10 flex justify-center md:mt-12">
+                        <button
+                            type="button"
+                            onClick={() => setShowAll((value) => !value)}
+                            aria-expanded={showAll}
+                            aria-controls="projects-grid"
+                            className="inline-flex min-h-12 items-center gap-2.5 rounded-full border border-white/15 px-6 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white/70 transition-colors duration-300 hover:border-accent/50 hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+                        >
+                            {showAll
+                                ? "Show fewer"
+                                : `Show all projects (${PROJECTS.length})`}
+                            <ChevronDown
+                                aria-hidden="true"
+                                size={15}
+                                className={`transition-transform duration-300 motion-reduce:transition-none ${
+                                    showAll ? "rotate-180" : ""
+                                }`}
+                            />
+                        </button>
+                    </div>
+                ) : null}
             </div>
         </section>
     );

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import { Cpu, Globe, Smartphone, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -23,6 +26,9 @@ export default function ProjectCover({
     className?: string;
 }) {
     const Icon = ICONS[project.category[0]];
+    const [imageFailed, setImageFailed] = useState(false);
+    const cover = project.cover;
+    const showCover = Boolean(cover) && !imageFailed;
 
     return (
         <div
@@ -31,13 +37,14 @@ export default function ProjectCover({
                 className,
             )}
         >
-            {project.cover ? (
+            {showCover && cover ? (
                 <Image
-                    src={project.cover}
+                    src={cover}
                     alt={`${project.title} — project cover`}
                     fill
                     sizes={sizes}
                     priority={priority}
+                    onError={() => setImageFailed(true)}
                     className="object-cover opacity-85 transition-[scale,opacity] duration-700 group-hover:scale-[1.04] group-hover:opacity-100 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
             ) : (

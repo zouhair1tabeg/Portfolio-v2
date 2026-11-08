@@ -2,23 +2,35 @@ export type ProjectCategory = "Mobile" | "Web" | "IoT";
 
 export type Project = {
     slug: string;
-    index: string; // "01" to "07"
+    index: string; // Computed from the array position, never authored.
     title: string;
+    nativeTitle?: string; // Original-alphabet title, rendered next to `title`.
+    subtitle?: string;
     category: readonly ProjectCategory[];
     year?: number;
+    featured?: boolean; // Shown before the visitor asks for all projects.
     summary: string;
     highlights: readonly string[];
     stack: readonly string[];
     cover?: string;
     links?: { repo?: string; live?: string };
+    caseStudy?: {
+        context: string;
+        solution: string;
+        features?: readonly { title: string; description: string }[];
+        architecture?: string;
+        stackGroups?: readonly { label: string; items: readonly string[] }[];
+    };
 };
 
-export const PROJECTS: readonly Project[] = [
+type ProjectInput = Omit<Project, "index">;
+
+const PROJECT_INPUT: readonly ProjectInput[] = [
     {
         slug: "labcollect",
-        index: "01",
         title: "LabCollect",
         category: ["Mobile"],
+        featured: true,
         summary: "Flutter field app that digitizes ONSSA food-safety sampling with GPS and biometric double validation.",
         highlights: [
             "GPS + biometric double validation",
@@ -31,9 +43,9 @@ export const PROJECTS: readonly Project[] = [
     },
     {
         slug: "smartbell",
-        index: "02",
         title: "SmartBell",
         category: ["IoT", "Web"],
+        featured: true,
         summary: "IoT school bell system with remote scheduling, instant triggering and an ESP32 hardware clock fallback.",
         highlights: [
             "Weekly scheduling and instant remote trigger",
@@ -45,11 +57,44 @@ export const PROJECTS: readonly Project[] = [
         links: { repo: "https://github.com/zouhair1tabeg/Smart-Bell" },
     },
     {
+        slug: "finak",
+        title: "Finak",
+        nativeTitle: "فينك",
+        subtitle: "Real-time location sharing",
+        category: ["Mobile"],
+        featured: true,
+        summary: "Native iOS app to share your live location with loved ones on an interactive map, optimized for battery life.",
+        highlights: [
+            "Interactive MapKit map with dynamic camera",
+            "Battery-friendly GPS tracking (10 m threshold)",
+            "Real-time cloud sync with secure authentication",
+        ],
+        stack: ["Swift", "SwiftUI", "MapKit", "CoreLocation", "Supabase", "MVVM"],
+        cover: "/images/projects/finak.webp",
+        caseStudy: {
+            context: "A native iOS app that lets close ones share their geographic position and find each other in real time on an interactive map.",
+            solution: "The project emphasizes battery savings through optimized GPS tracking, instant cloud synchronization and a modern Dark Theme / Glassmorphism interface.",
+            features: [
+                { title: "Interactive mapping", description: "MapKit view with a dynamic camera and custom markers." },
+                { title: "Battery-friendly GPS", description: "CoreLocation tracking calibrated with a 10 m movement threshold to preserve battery." },
+                { title: "Real-time & cloud", description: "Asynchronous synchronization of GPS coordinates and profile management." },
+                { title: "Security", description: "Complete email and password authentication with session persistence." },
+            ],
+            architecture: "Clean, reactive MVVM built for iOS 17+ with @Observable and Swift Concurrency (async/await), plus UIKit interop (UIViewRepresentable) for blur effects.",
+            stackGroups: [
+                { label: "Mobile", items: ["Swift", "SwiftUI", "iOS 17+", "@Observable", "Swift Concurrency (async/await)"] },
+                { label: "Maps & sensors", items: ["MapKit", "CoreLocation"] },
+                { label: "Backend & database", items: ["Supabase (PostgreSQL)", "Supabase Auth"] },
+                { label: "Architecture & UI", items: ["Clean MVVM", "UIKit interop (UIViewRepresentable)"] },
+            ],
+        },
+    },
+    {
         slug: "focusflow",
-        index: "03",
         title: "FocusFlow",
         category: ["Mobile"],
         year: 2025,
+        featured: true,
         summary: "All-in-one productivity app balancing daily tasks with integrated prayer times.",
         highlights: [
             "Daily task management",
@@ -61,10 +106,43 @@ export const PROJECTS: readonly Project[] = [
         links: { repo: "https://github.com/zouhair1tabeg/Focus-Flow" },
     },
     {
+        slug: "electronics-store-pos",
+        title: "Electronics Store POS",
+        subtitle: "Point of sale for electronics retailers",
+        category: ["Mobile"],
+        featured: true,
+        summary: "Flutter POS app with an offline-first catalog, Firebase authentication, inventory management and sales history.",
+        highlights: [
+            "Offline-first product catalog (Hive)",
+            "Secure authentication and route protection",
+            "Checkout with detailed invoice history",
+        ],
+        stack: ["Flutter", "Firebase", "Bloc / Cubit", "Clean Architecture", "Hive", "GetIt"],
+        cover: "/images/projects/electronics-store-pos.webp",
+        caseStudy: {
+            context: "A modern Point of Sale (POS) application for electronics retailers, built with Flutter, Firebase and Clean Architecture.",
+            solution: "The app is delivered in four phases: core sales, security, administration and sales history.",
+            features: [
+                { title: "Core sales", description: "Visual product grid with images, a cart with real-time totals, offline-first product caching with Hive, and a Seed Data button to populate dummy products." },
+                { title: "Security", description: "Secure login and registration with Firebase Auth, and automatic redirection of unauthenticated users." },
+                { title: "Administration", description: "Merchants add new products directly from the app, with image upload by taking a photo or picking from the gallery (Firebase Storage)." },
+                { title: "Sales history", description: "Checkout to process sales transactions and detailed invoices of past sales." },
+            ],
+            architecture: "Clean Architecture split into Presentation, Domain and Data layers, with Bloc / Cubit for state management and GetIt for dependency injection.",
+            stackGroups: [
+                { label: "Framework", items: ["Flutter", "Dart"] },
+                { label: "Backend", items: ["Firebase Auth", "Firestore", "Firebase Storage"] },
+                { label: "State management", items: ["Bloc / Cubit"] },
+                { label: "Architecture", items: ["Clean Architecture", "GetIt (dependency injection)"] },
+                { label: "Local storage", items: ["Hive"] },
+            ],
+        },
+    },
+    {
         slug: "rummy-score",
-        index: "04",
         title: "Rummy Score",
         category: ["Mobile"],
+        featured: true,
         summary: "Flutter scoring companion that applies official Rummy rules, elimination thresholds and game history.",
         highlights: [
             "Official Rummy rules engine",
@@ -77,7 +155,6 @@ export const PROJECTS: readonly Project[] = [
     },
     {
         slug: "fitness-tracker",
-        index: "05",
         title: "Fitness Tracker",
         category: ["Mobile"],
         year: 2023,
@@ -93,7 +170,6 @@ export const PROJECTS: readonly Project[] = [
     },
     {
         slug: "bazzar",
-        index: "06",
         title: "Bazzar",
         category: ["Web"],
         year: 2024,
@@ -109,7 +185,6 @@ export const PROJECTS: readonly Project[] = [
     },
     {
         slug: "portfolio-v1",
-        index: "07",
         title: "Portfolio V1",
         category: ["Web"],
         year: 2023,
@@ -123,4 +198,9 @@ export const PROJECTS: readonly Project[] = [
         cover: "/images/projects/portfolio-v1.png",
         links: { repo: "https://github.com/zouhair1tabeg/Zouhair-Portfolio" },
     },
-] as const;
+];
+
+export const PROJECTS: readonly Project[] = PROJECT_INPUT.map((project, position) => ({
+    ...project,
+    index: String(position + 1).padStart(2, "0"),
+}));
