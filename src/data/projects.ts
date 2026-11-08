@@ -139,25 +139,11 @@ const PROJECT_INPUT: readonly ProjectInput[] = [
         },
     },
     {
-        slug: "rummy-score",
-        title: "Rummy Score",
-        category: ["Mobile"],
-        featured: true,
-        summary: "Flutter scoring companion that applies official Rummy rules, elimination thresholds and game history.",
-        highlights: [
-            "Official Rummy rules engine",
-            "Automatic points and elimination thresholds",
-            "Saved game history",
-        ],
-        stack: ["Flutter", "Dart", "Clean Architecture", "ChangeNotifier", "SharedPreferences", "Unit Testing"],
-        cover: "/images/projects/rummy-score.webp",
-        links: { repo: "https://github.com/zouhair1tabeg/Rummy-Score" },
-    },
-    {
         slug: "fitness-tracker",
         title: "Fitness Tracker",
         category: ["Mobile"],
         year: 2023,
+        featured: true,
         summary: "Real-time health monitoring with Google Fit integration.",
         highlights: [
             "Real-time health monitoring",
@@ -167,6 +153,20 @@ const PROJECT_INPUT: readonly ProjectInput[] = [
         stack: ["Flutter", "Firebase", "HealthKit"],
         cover: "/images/projects/fitness.png",
         links: { repo: "https://github.com/zouhair1tabeg/Fitness_Tracker" },
+    },
+    {
+        slug: "rummy-score",
+        title: "Rummy Score",
+        category: ["Mobile"],
+        summary: "Flutter scoring companion that applies official Rummy rules, elimination thresholds and game history.",
+        highlights: [
+            "Official Rummy rules engine",
+            "Automatic points and elimination thresholds",
+            "Saved game history",
+        ],
+        stack: ["Flutter", "Dart", "Clean Architecture", "ChangeNotifier", "SharedPreferences", "Unit Testing"],
+        cover: "/images/projects/rummy-score.webp",
+        links: { repo: "https://github.com/zouhair1tabeg/Rummy-Score" },
     },
     {
         slug: "bazzar",
