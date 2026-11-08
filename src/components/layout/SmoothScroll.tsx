@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { ReactLenis, useLenis } from "@studio-freight/react-lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
@@ -10,6 +11,7 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
  */
 function LenisSync() {
     const lenis = useLenis();
+    const pathname = usePathname();
 
     useEffect(() => {
         if (!lenis) return;
@@ -26,6 +28,27 @@ function LenisSync() {
             lenis.off("scroll", onScroll);
         };
     }, [lenis]);
+
+    // Next.js scrolls to the hash before the destination sections exist,
+    // so a client-side return to "/#projects" would stay at the top. Wait for
+    // the new page to paint, then let Lenis jump to the requested section.
+    useEffect(() => {
+        if (!lenis) return;
+
+        const hash = window.location.hash;
+        if (!hash) return;
+
+        const id = decodeURIComponent(hash.slice(1));
+        let frame = window.requestAnimationFrame(() => {
+            frame = window.requestAnimationFrame(() => {
+                const target = document.getElementById(id);
+                if (!target) return;
+                lenis.scrollTo(target, { immediate: true });
+            });
+        });
+
+        return () => window.cancelAnimationFrame(frame);
+    }, [lenis, pathname]);
 
     return null;
 }
