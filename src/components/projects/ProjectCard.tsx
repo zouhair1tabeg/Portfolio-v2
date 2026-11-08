@@ -1,7 +1,8 @@
 "use client";
 
 import type { CSSProperties, PointerEvent } from "react";
-import { ArrowUpRight, Check } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, Check, Github } from "lucide-react";
 import type { Project } from "@/data/projects";
 import CategoryBadges from "@/components/projects/CategoryBadges";
 import ProjectCover from "@/components/projects/ProjectCover";
@@ -14,7 +15,9 @@ export default function ProjectCard({
     project: Project;
     priority?: boolean;
 }) {
-    const clickable = Boolean(project.links?.repo);
+    const hasCaseStudy = Boolean(project.caseStudy);
+    const repo = project.links?.repo;
+    const clickable = hasCaseStudy;
 
     const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
         if (event.pointerType === "touch") return;
@@ -93,23 +96,39 @@ export default function ProjectCard({
                     <StackChips items={project.stack} limit={4} />
                 </div>
 
-                <div className="mt-auto flex items-center gap-3 pt-6">
-                    {project.links?.repo ? (
-                        <a
-                            href={project.links.repo}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group/cta inline-flex min-h-11 items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 transition-colors duration-300 hover:text-accent after:absolute after:inset-0 after:rounded-3xl after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-accent"
-                        >
-                            View on GitHub
-                            <ArrowUpRight
-                                aria-hidden="true"
-                                size={15}
-                                className="transition-transform duration-300 group-hover/cta:translate-x-1 group-hover/cta:-translate-y-1 motion-reduce:transition-none"
-                            />
-                        </a>
-                    ) : null}
-                </div>
+                {hasCaseStudy || repo ? (
+                    <div className="mt-auto flex items-center justify-between gap-3 pt-6">
+                        {hasCaseStudy ? (
+                            <Link
+                                href={`/projects/${project.slug}`}
+                                className="group/cta inline-flex min-h-11 items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 transition-colors duration-300 hover:text-accent after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-accent"
+                            >
+                                View case study
+                                <ArrowUpRight
+                                    aria-hidden="true"
+                                    size={15}
+                                    className="transition-transform duration-300 group-hover/cta:translate-x-1 group-hover/cta:-translate-y-1 motion-reduce:transition-none"
+                                />
+                            </Link>
+                        ) : (
+                            <span />
+                        )}
+
+                        {repo ? (
+                            <a
+                                href={repo}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`View ${project.title} source code on GitHub`}
+                                title="GitHub"
+                                data-cursor="pointer"
+                                className="relative z-10 inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-white/15 text-white/60 transition-[color,border-color,transform] duration-300 hover:-translate-y-px hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink-soft motion-reduce:transition-colors motion-reduce:hover:translate-y-0"
+                            >
+                                <Github aria-hidden="true" size={17} />
+                            </a>
+                        ) : null}
+                    </div>
+                ) : null}
             </div>
         </article>
     );
