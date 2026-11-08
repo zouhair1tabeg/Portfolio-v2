@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { Briefcase } from "lucide-react";
+import Certifications from "@/components/certifications/Certifications";
 
 
 const EXPERIENCE_DATA = [
@@ -207,6 +208,8 @@ export default function Experience() {
                     </div>
 
                 </div>
+
+                <Certifications />
 
             </div>
         </section>
