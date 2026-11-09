@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
 import { ReactLenis, useLenis } from "@studio-freight/react-lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
@@ -11,7 +10,6 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
  */
 function LenisSync() {
     const lenis = useLenis();
-    const pathname = usePathname();
 
     useEffect(() => {
         if (!lenis) return;
@@ -29,27 +27,6 @@ function LenisSync() {
         };
     }, [lenis]);
 
-    // Next.js scrolls to the hash before the destination sections exist,
-    // so a client-side return to "/#projects" would stay at the top. Wait for
-    // the new page to paint, then let Lenis jump to the requested section.
-    useEffect(() => {
-        if (!lenis) return;
-
-        const hash = window.location.hash;
-        if (!hash) return;
-
-        const id = decodeURIComponent(hash.slice(1));
-        let frame = window.requestAnimationFrame(() => {
-            frame = window.requestAnimationFrame(() => {
-                const target = document.getElementById(id);
-                if (!target) return;
-                lenis.scrollTo(target, { immediate: true });
-            });
-        });
-
-        return () => window.cancelAnimationFrame(frame);
-    }, [lenis, pathname]);
-
     return null;
 }
 
@@ -61,6 +38,21 @@ export default function SmoothScroll({
     // The package ships its own copy of @types/react, so the two ReactNode
     // definitions do not match structurally.
     const content = children as unknown as React.ComponentProps<typeof ReactLenis>["children"];
+
+    // Let our hash handling own the landing position instead of the browser.
+    // ScrollTrigger records the current value and restores it on every refresh,
+    // so tell it to keep "manual" too.
+    useEffect(() => {
+        if (!("scrollRestoration" in history)) return;
+
+        const previous = history.scrollRestoration;
+        history.scrollRestoration = "manual";
+        ScrollTrigger.clearScrollMemory("manual");
+
+        return () => {
+            history.scrollRestoration = previous;
+        };
+    }, []);
 
     return (
         <ReactLenis root autoRaf={false} options={{ lerp: 0.1, smoothWheel: true }}>

@@ -7,8 +7,11 @@ import Services from "@/components/sections/Services";
 import Projects from "@/components/sections/Projects";
 import Experience from "@/components/sections/Experience";
 import Contact from "@/components/sections/Contact";
+import { useScrollToHash } from "@/hooks/useScrollToHash";
 
 export default function Home() {
+    useScrollToHash();
+
     return (
         <main id="main-content" className="min-h-screen bg-black">
             <Hero />

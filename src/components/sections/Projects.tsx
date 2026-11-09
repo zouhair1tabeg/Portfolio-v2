@@ -1,17 +1,58 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { ChevronDown } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { PROJECTS } from "@/data/projects";
 import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectFilters, {
+    FILTERS,
     type ProjectFilter,
 } from "@/components/projects/ProjectFilters";
 
 const FEATURED_PROJECTS = PROJECTS.filter((project) => project.featured);
 const HIDDEN_COUNT = PROJECTS.length - FEATURED_PROJECTS.length;
+
+const FILTER_STORAGE_KEY = "zt:projects:filter";
+const SHOW_ALL_STORAGE_KEY = "zt:projects:show-all";
+const PREFERENCES_EVENT = "zt:projects-preferences";
+
+/** Restore the project view after a case study round-trip, if available. */
+function readStoredFilter(): ProjectFilter {
+    try {
+        const stored = window.sessionStorage.getItem(FILTER_STORAGE_KEY);
+        if (stored && (FILTERS as readonly string[]).includes(stored)) {
+            return stored as ProjectFilter;
+        }
+    } catch {
+        // Storage can be unavailable (private mode, blocked cookies).
+    }
+    return "All";
+}
+
+function readStoredShowAll(): boolean {
+    try {
+        return window.sessionStorage.getItem(SHOW_ALL_STORAGE_KEY) === "true";
+    } catch {
+        return false;
+    }
+}
+
+function subscribeToPreferences(onStoreChange: () => void): () => void {
+    window.addEventListener(PREFERENCES_EVENT, onStoreChange);
+    return () => window.removeEventListener(PREFERENCES_EVENT, onStoreChange);
+}
+
+function writePreferences(filter: ProjectFilter, showAll: boolean): void {
+    try {
+        window.sessionStorage.setItem(FILTER_STORAGE_KEY, filter);
+        window.sessionStorage.setItem(SHOW_ALL_STORAGE_KEY, String(showAll));
+    } catch {
+        // Ignore storage failures.
+    }
+    window.dispatchEvent(new Event(PREFERENCES_EVENT));
+}
 
 const COUNTS: Record<ProjectFilter, number> = {
     All: PROJECTS.length,
@@ -25,9 +66,22 @@ export default function Projects() {
     const gridRef = useRef<HTMLDivElement>(null);
     const previousFilter = useRef<ProjectFilter>("All");
     const previousSlugs = useRef<Set<string> | null>(null);
-    const [filter, setFilter] = useState<ProjectFilter>("All");
-    const [showAll, setShowAll] = useState(false);
+    const filter = useSyncExternalStore<ProjectFilter>(
+        subscribeToPreferences,
+        readStoredFilter,
+        () => "All",
+    );
+    const showAll = useSyncExternalStore<boolean>(
+        subscribeToPreferences,
+        readStoredShowAll,
+        () => false,
+    );
     const reduced = usePrefersReducedMotion();
+
+    const setFilter = (nextFilter: ProjectFilter) =>
+        writePreferences(nextFilter, showAll);
+    const setShowAll = (updater: (value: boolean) => boolean) =>
+        writePreferences(filter, updater(showAll));
 
     const visible =
         filter === "All"

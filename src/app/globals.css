@@ -13,6 +13,9 @@
 }
 
 @theme {
+  /* Height reserved by a fixed nav, if one is added later. */
+  --nav-h: 0px;
+
   /* Single source of truth for the accent colour. */
   --accent: #C6FF3D;
   --color-accent: var(--accent);
@@ -60,6 +63,11 @@
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
+  }
+
+  /* Hash targets share the nav offset with useScrollToHash. */
+  section[id] {
+    scroll-margin-top: var(--nav-h);
   }
 
   ::selection {
