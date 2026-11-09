@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
+import { PROJECTS } from "@/data/projects";
 
 
 export default function About() {
@@ -106,7 +107,7 @@ export default function About() {
                         fontFamily: "'Space Grotesk', sans-serif",
                         WebkitTextStroke: "2px #333"
                     }}>
-                    MOROCCO <span className="text-[2vw] font-mono tracking-widest align-middle text-white ml-8">32.5°N, 6.5°W</span>
+                    MOROCCO
                 </p>
             </div>
 
@@ -148,7 +149,12 @@ export default function About() {
                         {/* Floating Data Cards (Overlapping) */}
                         <div ref={statsRef} className="absolute -bottom-12 -right-6 md:-right-16 flex flex-col gap-4 z-20">
                             <DataCard label="Years Exp." value="3+" sub="Web & Mobile Dev" />
-                            <DataCard label="Projects" value="20+" sub="Delivered" delay={0.2} />
+                            <DataCard
+                                label="Projects"
+                                value={String(PROJECTS.length)}
+                                sub="Featured"
+                                delay={0.2}
+                            />
                         </div>
 
                         {/* Decor Lines */}
@@ -193,13 +199,6 @@ export default function About() {
                                     Whether it&apos;s a high-performance web application or a fluid mobile experience, I obsess over every pixel and interaction.
                                 </p>
                             </div>
-
-                            {/* <div className="flex items-center gap-4 text-sm font-mono text-gray-500 pl-6">
-                                <MapPin size={16} className="text-accent" />
-                                <span>32.5574° N, 6.5186° W</span>
-                                <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
-                                <span>GMT+1</span>
-                            </div> */}
                         </div>
 
                     </div>
@@ -242,7 +241,7 @@ function MagneticWrapper({ children }: { children: React.ReactNode }) {
 function DataCard({ label, value, sub }: { label: string, value: string, sub: string, delay?: number }) {
     const cardRef = useRef<HTMLDivElement>(null);
     const valueRef = useRef<HTMLHeadingElement>(null);
-    // Parse number from string (e.g. "20+" -> 20)
+    // Parse number from string (e.g. "9" -> 9)
     const numValue = parseInt(value);
     const suffix = value.replace(/[0-9]/g, '');
 
@@ -263,11 +262,15 @@ function DataCard({ label, value, sub }: { label: string, value: string, sub: st
                     if (valueRef.current) {
                         valueRef.current.innerHTML = Math.ceil(this.targets()[0].textContent) + suffix;
                     }
+                },
+                onComplete: () => {
+                    // GSAP writes the numeric end value last; restore the suffix.
+                    if (valueRef.current) valueRef.current.innerHTML = value;
                 }
             });
         }, cardRef);
         return () => ctx.revert();
-    }, [numValue, suffix]);
+    }, [numValue, suffix, value]);
 
     return (
         <MagneticWrapper>

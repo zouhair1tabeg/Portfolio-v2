@@ -7,7 +7,6 @@ export const HERO_ROLES = [
 export const HERO_TAGLINE = "Web & mobile apps — fast, polished, built to ship.";
 
 export const HERO_LOCATION = "Based in Morocco";
-export const HERO_COORDS = "32.5°N 6.5°W";
 
 export const LATEST_BUILD = {
     label: "FocusFlow",

@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CASE_STUDY_PROJECTS } from "@/data/projects";
 import CaseStudy from "@/components/projects/CaseStudy";
+import {
+    OG_IMAGE_ALT,
+    OG_IMAGE_HEIGHT,
+    OG_IMAGE_WIDTH,
+} from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -24,16 +29,33 @@ export async function generateMetadata({
     return {
         title,
         description: project.summary,
+        alternates: {
+            canonical: `/projects/${project.slug}`,
+        },
         openGraph: {
             title,
             description: project.summary,
             type: "article",
             locale: "en_US",
+            images: [
+                {
+                    url: "/og-image.png",
+                    width: OG_IMAGE_WIDTH,
+                    height: OG_IMAGE_HEIGHT,
+                    alt: OG_IMAGE_ALT,
+                },
+            ],
         },
         twitter: {
             card: "summary_large_image",
             title,
             description: project.summary,
+            images: [
+                {
+                    url: "/og-image.png",
+                    alt: OG_IMAGE_ALT,
+                },
+            ],
         },
     };
 }

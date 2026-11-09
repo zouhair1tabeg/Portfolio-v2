@@ -5,7 +5,6 @@ import { ArrowUpRight } from "lucide-react";
 import { NAV_LINKS } from "@/lib/navigation";
 import { useScrollTo } from "@/hooks/useScrollTo";
 import {
-    HERO_COORDS,
     HERO_LOCATION,
     LATEST_BUILD,
     MARQUEE_ITEMS,
@@ -56,9 +55,7 @@ export default function HeroMeta() {
                         </span>
                         Available for freelance
                     </span>
-                    <span className="text-white/35">
-                        {HERO_LOCATION} — {HERO_COORDS}
-                    </span>
+                    <span className="text-white/35">{HERO_LOCATION}</span>
                 </div>
 
                 <div className="hidden flex-col items-center gap-2 md:flex" aria-hidden="true">

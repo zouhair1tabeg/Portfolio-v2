@@ -13,6 +13,14 @@ import Footer from "@/components/layout/Footer";
 import GrainOverlay from "@/components/ui/GrainOverlay";
 import CustomCursor from "@/components/ui/CustomCursor";
 import ScrollSpy from "@/components/utils/ScrollSpy";
+import {
+    OG_IMAGE_ALT,
+    OG_IMAGE_HEIGHT,
+    OG_IMAGE_WIDTH,
+    SITE_DESCRIPTION,
+    SITE_TITLE,
+    SITE_URL,
+} from "@/lib/site";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" });
@@ -24,24 +32,39 @@ const notoSansArabic = Noto_Sans_Arabic({
     display: "swap",
 });
 
-const SITE_TITLE = "Tabeg Zouhair | Web & Mobile Developer";
-const SITE_DESCRIPTION =
-    "Portfolio of Tabeg Zouhair, a web and mobile developer crafting fast, polished digital experiences.";
-
 export const metadata: Metadata = {
+    metadataBase: new URL(SITE_URL),
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
+    alternates: {
+        canonical: "/",
+    },
     openGraph: {
         title: SITE_TITLE,
         description: SITE_DESCRIPTION,
+        url: "/",
         locale: "en_US",
         type: "website",
         siteName: "Tabeg Zouhair",
+        images: [
+            {
+                url: "/og-image.png",
+                width: OG_IMAGE_WIDTH,
+                height: OG_IMAGE_HEIGHT,
+                alt: OG_IMAGE_ALT,
+            },
+        ],
     },
     twitter: {
         card: "summary_large_image",
         title: SITE_TITLE,
         description: SITE_DESCRIPTION,
+        images: [
+            {
+                url: "/og-image.png",
+                alt: OG_IMAGE_ALT,
+            },
+        ],
     },
 };
 

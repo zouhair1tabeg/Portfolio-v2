@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
-import { HERO_COORDS } from "@/components/hero/hero-data";
+import { HERO_LOCATION } from "@/components/hero/hero-data";
 
 type HeroIntroProps = {
     onFinish: () => void;
@@ -167,10 +167,7 @@ export default function HeroIntro({ onFinish }: HeroIntroProps) {
 
                 <div className="flex items-end justify-between font-mono text-[10px] uppercase tracking-[0.28em] text-white/35">
                     <span data-intro-rise className="block">
-                        Casablanca, MA
-                    </span>
-                    <span data-intro-rise className="hidden md:block">
-                        {HERO_COORDS}
+                        {HERO_LOCATION}
                     </span>
                     <span data-intro-rise className="hidden text-white/20 md:block">
                         Click to skip

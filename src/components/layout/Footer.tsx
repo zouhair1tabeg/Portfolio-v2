@@ -14,9 +14,12 @@ export default function Footer() {
                 <div className="text-sm text-gray-400">
                     © {new Date().getFullYear()} Tabeg Zouhair. All rights reserved.
                 </div>
-                <div className="flex gap-6 text-sm uppercase tracking-widest">
+                <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm uppercase tracking-widest">
                     <Link href={anchor("#about")} className="hover:text-blue-500 transition-colors">About</Link>
+                    <Link href={anchor("#skills")} className="hover:text-blue-500 transition-colors">Skills</Link>
+                    <Link href={anchor("#services")} className="hover:text-blue-500 transition-colors">Services</Link>
                     <Link href={anchor("#projects")} className="hover:text-blue-500 transition-colors">Projects</Link>
+                    <Link href={anchor("#experience")} className="hover:text-blue-500 transition-colors">Experience</Link>
                     <Link href={anchor("#contact")} className="hover:text-blue-500 transition-colors">Contact</Link>
                 </div>
                 <button

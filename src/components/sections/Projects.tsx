@@ -89,8 +89,10 @@ export default function Projects() {
                 ? PROJECTS
                 : FEATURED_PROJECTS
             : PROJECTS.filter((project) => project.category.includes(filter));
-    const projectLabel = `${String(visible.length).padStart(2, "0")} ${
-        visible.length === 1 ? "project" : "projects"
+    // Always report the real total: all projects, or the selected category.
+    const totalForFilter = filter === "All" ? PROJECTS.length : COUNTS[filter];
+    const projectLabel = `${String(totalForFilter).padStart(2, "0")} ${
+        totalForFilter === 1 ? "project" : "projects"
     }`;
 
     // Scroll entrance, once per card, transform/opacity only.
